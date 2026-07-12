@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
@@ -206,6 +205,60 @@
             padding: 12px;
         }
 
+        /* ===== 検索ボックス ===== */
+        .search-bar {
+            position: sticky;
+            top: 0;
+            z-index: 400;
+            background: #fffaf3;
+            padding: 10px 16px;
+            border-bottom: 1px solid #f0e0d0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-bar input[type="text"] {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 0.95rem;
+            border: 1px solid #d8c4ac;
+            border-radius: 6px;
+            background: #fff;
+        }
+        .search-bar input[type="text"]:focus {
+            outline: none;
+            border-color: #d2691e;
+        }
+        .search-clear-btn {
+            background: #eee;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            color: #555;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .search-no-result {
+            display: none;
+            text-align: center;
+            color: #999;
+            padding: 24px 16px;
+            font-size: 0.95rem;
+        }
+        .search-no-result.active {
+            display: block;
+        }
+        .search-hit-count {
+            font-size: 0.8rem;
+            color: #a0522d;
+            padding: 0 16px 4px;
+            display: none;
+        }
+        .search-hit-count.active {
+            display: block;
+        }
+
         /* ===== お気に入り登録エリア ===== */
         .like-area {
             margin-top: 10px;
@@ -244,9 +297,21 @@
             border-radius: 6px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             margin-bottom: 10px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .favorite-entry:hover, .favorite-entry:active {
+            transform: scale(1.02);
+            border-color: #e8b988;
         }
         .favorite-entry .fav-name {
             font-weight: bold;
+        }
+        .favorite-entry .fav-jump {
+            font-size: 0.75rem;
+            color: #a0522d;
+            margin-left: 8px;
         }
         .favorite-entry .fav-price {
             color: #c0392b;
@@ -289,13 +354,13 @@
             line-height: 1;
         }
 
-        /* ===== 目次ボタン＆パネル ===== */
-        .toc-fab {
+        /* ===== 常に表示される「お気に入り」ボタン ===== */
+        .fav-fab {
             position: fixed;
             right: 16px;
             bottom: 152px;
             z-index: 500;
-            background: #d2691e;
+            background: #e63946;
             color: #fff;
             border: none;
             width: 56px;
@@ -306,65 +371,200 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 0.62rem;
+            font-size: 0.55rem;
             line-height: 1.1;
             cursor: pointer;
+            text-decoration: none;
             transition: transform 0.2s, opacity 0.2s;
         }
-        .toc-fab:hover, .toc-fab:active {
+        .fav-fab:hover, .fav-fab:active {
             transform: scale(1.08);
-            background: #b85a18;
+            background: #c22836;
         }
-        .toc-fab .toc-fab-icon {
-            font-size: 1.15rem;
+        .fav-fab .fav-fab-icon {
+            font-size: 1.1rem;
             line-height: 1;
         }
-        .toc-panel-overlay {
+        .fav-fab-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #fff;
+            color: #e63946;
+            border: 2px solid #e63946;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 3px;
+            font-size: 0.65rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            display: none;
+        }
+        .fav-fab-badge.active {
+            display: flex;
+        }
+
+        /* ===== 左上ハンバーガーボタン ===== */
+        .hamburger-btn {
+            position: fixed;
+            left: 16px;
+            top: 16px;
+            z-index: 500;
+            background: #8b4513;
+            color: #fff;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+        .hamburger-btn:hover, .hamburger-btn:active {
+            background: #6e3610;
+        }
+
+        /* ===== サイドドロワー（目次＋お気に入り） ===== */
+        .drawer-overlay {
             display: none;
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.4);
-            z-index: 600;
+            z-index: 700;
         }
-        .toc-panel-overlay.active {
+        .drawer-overlay.active {
             display: block;
         }
-        .toc-panel {
+        .drawer-panel {
             position: fixed;
-            right: 16px;
-            bottom: 216px;
-            z-index: 601;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 701;
+            width: 260px;
+            max-width: 82vw;
             background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-            width: 220px;
-            max-height: 60vh;
+            box-shadow: 2px 0 16px rgba(0,0,0,0.3);
             overflow-y: auto;
-            padding: 8px;
+            transform: translateX(-100%);
+            transition: transform 0.25s;
         }
-        .toc-panel-title {
-            font-size: 0.85rem;
+        .drawer-panel.active {
+            transform: translateX(0);
+        }
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: #fffaf3;
+            border-bottom: 1px solid #f0e0d0;
+        }
+        .drawer-header span {
             font-weight: bold;
             color: #8b4513;
-            padding: 6px 8px;
         }
-        .toc-panel a {
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .drawer-top-link {
             display: block;
-            padding: 10px 10px;
-            border-radius: 6px;
+            padding: 12px 16px;
+            color: #a0522d;
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 1px solid #f0e0d0;
+        }
+        .drawer-section-title {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #a0522d;
+            padding: 14px 16px 4px;
+        }
+        .drawer-panel a.drawer-cat-link {
+            display: block;
+            padding: 10px 16px;
             color: #333;
             text-decoration: none;
             font-size: 0.92rem;
         }
-        .toc-panel a:hover, .toc-panel a:active {
+        .drawer-panel a.drawer-cat-link:hover, .drawer-panel a.drawer-cat-link:active {
             background: #fef3e8;
             color: #8b4513;
         }
-        .toc-panel a.toc-top-link {
-            color: #a0522d;
-            font-weight: bold;
+        #drawerFavoritesList {
+            padding: 0 16px 16px;
+        }
+
+        /* ===== お気に入り専用パネル ===== */
+        .fav-panel-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 800;
+        }
+        .fav-panel-overlay.active {
+            display: block;
+        }
+        .fav-panel {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 801;
+            max-height: 75vh;
+            background: #fff;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -2px 16px rgba(0,0,0,0.3);
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.25s;
+        }
+        .fav-panel.active {
+            transform: translateY(0);
+        }
+        .fav-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 18px;
+            background: #fffaf3;
             border-bottom: 1px solid #f0e0d0;
-            margin-bottom: 4px;
+            position: sticky;
+            top: 0;
+        }
+        .fav-panel-header span {
+            font-weight: bold;
+            color: #8b4513;
+            font-size: 1.05rem;
+        }
+        .fav-panel-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .fav-panel-body {
+            padding: 14px 18px 24px;
+        }
+        .fav-panel-hint {
+            font-size: 0.8rem;
+            color: #a0522d;
+            margin-bottom: 10px;
         }
 
         /* 拡大画像モーダル */
@@ -431,6 +631,15 @@
             border-radius: 4px;
         }
 
+        /* ハイライト演出（お気に入りからジャンプした商品を一時的に強調） */
+        .menu-item.jump-highlight {
+            animation: jumpHighlightAnim 1.6s ease;
+        }
+        @keyframes jumpHighlightAnim {
+            0% { background-color: #fff3cd; box-shadow: 0 0 0 3px #e8b988; }
+            100% { background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        }
+
         /* スマホ表示対応 */
         @media (max-width: 600px) {
             .menu-item {
@@ -444,11 +653,11 @@
             .like-area {
                 justify-content: center;
             }
-            .toc-fab {
-                right: 12px;
-                bottom: 140px;
-                width: 52px;
-                height: 52px;
+            .hamburger-btn {
+                left: 12px;
+                top: 12px;
+                width: 44px;
+                height: 44px;
             }
             .collapse-fab {
                 right: 12px;
@@ -456,10 +665,14 @@
                 width: 52px;
                 height: 52px;
             }
-            .toc-panel {
+            .fav-fab {
                 right: 12px;
-                bottom: 200px;
-                width: 200px;
+                bottom: 140px;
+                width: 52px;
+                height: 52px;
+            }
+            .drawer-panel {
+                width: 220px;
             }
             .favorite-entry {
                 flex-direction: column;
@@ -477,6 +690,13 @@
 <h1>中華 つけ麺 はるき</h1>
 <p class="note">※ 店内専用です。インターネットへの公開・アップロードは行わないでください</p>
 </header>
+<div class="search-bar">
+<input aria-label="メニューを検索" autocomplete="off" id="menuSearchInput" placeholder="商品名で検索（例：味噌、エビ、餃子）" type="text"/>
+<button class="search-clear-btn" id="menuSearchClearBtn" type="button">クリア</button>
+</div>
+<div class="search-hit-count" id="searchHitCount"></div>
+<div class="search-no-result" id="searchNoResult">該当する商品が見つかりませんでした</div>
+<div class="menu-grid" id="searchResultsGrid" style="display:none; padding: 0 16px;"></div>
 <main>
 <div class="menu-list">
 <details class="menu-category" id="section-tsukemen">
@@ -487,7 +707,7 @@
             【トッピング】<br/>
             バター：50円 / チャーシュー：280円 / ネギ・玉ねぎ・のり・野菜・わかめ・メンマ・味玉：各130円
         </div>
-<div class="subcats"><details class="sub-category"><summary>豚骨魚介つけ麺<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="tsukemen-1">
+<div class="subcats"><details class="sub-category" id="section-tsukemen-sub0"><summary>豚骨魚介つけ麺<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="tsukemen-1" data-tags="noodle">
 <div class="photo" data-name="つけ麺">写真挿入</div>
 <div class="info">
 <h3>つけ麺</h3>
@@ -497,7 +717,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="tsukemen-2">
+</div><div class="menu-item" data-id="tsukemen-2" data-tags="noodle">
 <div class="photo" data-name="特製つけ麺">写真挿入</div>
 <div class="info">
 <h3>特製つけ麺</h3>
@@ -507,7 +727,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="tsukemen-3">
+</div><div class="menu-item" data-id="tsukemen-3" data-tags="spicy,noodle">
 <div class="photo" data-name="辛つけ麺">写真挿入</div>
 <div class="info">
 <h3>辛つけ麺</h3>
@@ -517,7 +737,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="tsukemen-4">
+</div><div class="menu-item" data-id="tsukemen-4" data-tags="spicy,noodle">
 <div class="photo" data-name="特製辛つけ麺">写真挿入</div>
 <div class="info">
 <h3>特製辛つけ麺</h3>
@@ -527,7 +747,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>トマトカレーつけ麺<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="tsukemen-5">
+</div></div></details><details class="sub-category" id="section-tsukemen-sub1"><summary>トマトカレーつけ麺<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="tsukemen-5" data-tags="vegetable,spicy,noodle">
 <div class="photo" data-name="トマトカレーつけ麺">写真挿入</div>
 <div class="info">
 <h3>トマトカレーつけ麺</h3>
@@ -537,7 +757,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="tsukemen-6">
+</div><div class="menu-item" data-id="tsukemen-6" data-tags="vegetable,spicy,noodle">
 <div class="photo" data-name="特製トマトカレーつけ麺">写真挿入</div>
 <div class="info">
 <h3>特製トマトカレーつけ麺</h3>
@@ -547,7 +767,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="tsukemen-7">
+</div><div class="menu-item" data-id="tsukemen-7" data-tags="vegetable,spicy,noodle">
 <div class="photo" data-name="辛トマトカレーつけ麺">写真挿入</div>
 <div class="info">
 <h3>辛トマトカレーつけ麺</h3>
@@ -557,7 +777,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="tsukemen-8">
+</div><div class="menu-item" data-id="tsukemen-8" data-tags="vegetable,spicy,noodle">
 <div class="photo" data-name="特製辛トマトカレーつけ麺">写真挿入</div>
 <div class="info">
 <h3>特製辛トマトカレーつけ麺</h3>
@@ -567,7 +787,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>味噌つけ麺<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="tsukemen-9">
+</div></div></details><details class="sub-category" id="section-tsukemen-sub2"><summary>味噌つけ麺<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="tsukemen-9" data-tags="noodle">
 <div class="photo" data-name="味噌つけ麺">写真挿入</div>
 <div class="info">
 <h3>味噌つけ麺</h3>
@@ -577,7 +797,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="tsukemen-10">
+</div><div class="menu-item" data-id="tsukemen-10" data-tags="noodle">
 <div class="photo" data-name="特製味噌つけ麺">写真挿入</div>
 <div class="info">
 <h3>特製味噌つけ麺</h3>
@@ -587,7 +807,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="tsukemen-11">
+</div><div class="menu-item" data-id="tsukemen-11" data-tags="spicy,noodle">
 <div class="photo" data-name="辛味噌つけ麺">写真挿入</div>
 <div class="info">
 <h3>辛味噌つけ麺</h3>
@@ -597,7 +817,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="tsukemen-12">
+</div><div class="menu-item" data-id="tsukemen-12" data-tags="spicy,noodle">
 <div class="photo" data-name="特製辛味噌つけ麺">写真挿入</div>
 <div class="info">
 <h3>特製辛味噌つけ麺</h3>
@@ -607,7 +827,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>まぜそば<span class="sub-count">1品</span></summary><div class="menu-grid"><div class="menu-item" data-id="tsukemen-13">
+</div></div></details><details class="sub-category" id="section-tsukemen-sub3"><summary>まぜそば<span class="sub-count">1品</span></summary><div class="menu-grid"><div class="menu-item" data-id="tsukemen-13" data-tags="noodle">
 <div class="photo" data-name="まぜそば">写真挿入</div>
 <div class="info">
 <h3>まぜそば</h3>
@@ -628,7 +848,7 @@
             【トッピング】<br/>
             バター：50円 / チャーシュー：280円 / ネギ・玉ねぎ・のり・野菜・わかめ・メンマ・味玉：各130円
         </div>
-<div class="subcats"><details class="sub-category"><summary>醤油ラーメン<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-1">
+<div class="subcats"><details class="sub-category" id="section-ramen-sub0"><summary>醤油ラーメン<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-1" data-tags="noodle">
 <div class="photo" data-name="ラーメン">写真挿入</div>
 <div class="info">
 <h3>ラーメン</h3>
@@ -638,7 +858,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ramen-2">
+</div><div class="menu-item" data-id="ramen-2" data-tags="noodle">
 <div class="photo" data-name="特製ラーメン">写真挿入</div>
 <div class="info">
 <h3>特製ラーメン</h3>
@@ -648,7 +868,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ramen-3">
+</div><div class="menu-item" data-id="ramen-3" data-tags="noodle">
 <div class="photo" data-name="わかめラーメン">写真挿入</div>
 <div class="info">
 <h3>わかめラーメン</h3>
@@ -658,7 +878,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ramen-4">
+</div><div class="menu-item" data-id="ramen-4" data-tags="pork,noodle">
 <div class="photo" data-name="チャーシュー麺">写真挿入</div>
 <div class="info">
 <h3>チャーシュー麺</h3>
@@ -668,7 +888,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>タンメン<span class="sub-count">3品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-5">
+</div></div></details><details class="sub-category" id="section-ramen-sub1"><summary>タンメン<span class="sub-count">3品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-5" data-tags="vegetable,noodle">
 <div class="photo" data-name="野菜タンメン">写真挿入</div>
 <div class="info">
 <h3>野菜タンメン</h3>
@@ -678,7 +898,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ramen-6">
+</div><div class="menu-item" data-id="ramen-6" data-tags="spicy">
 <div class="photo" data-name="トンタン麺">写真挿入</div>
 <div class="info">
 <h3>トンタン麺</h3>
@@ -688,7 +908,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ramen-7">
+</div><div class="menu-item" data-id="ramen-7" data-tags="vegetable,spicy">
 <div class="photo" data-name="もやしトンタン麺">写真挿入</div>
 <div class="info">
 <h3>もやしトンタン麺</h3>
@@ -698,7 +918,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>塩ラーメン<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-8">
+</div></div></details><details class="sub-category" id="section-ramen-sub2"><summary>塩ラーメン<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-8" data-tags="noodle">
 <div class="photo" data-name="塩ラーメン">写真挿入</div>
 <div class="info">
 <h3>塩ラーメン</h3>
@@ -708,7 +928,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ramen-9">
+</div><div class="menu-item" data-id="ramen-9" data-tags="noodle">
 <div class="photo" data-name="特製塩ラーメン">写真挿入</div>
 <div class="info">
 <h3>特製塩ラーメン</h3>
@@ -718,7 +938,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>味噌ラーメン<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-10">
+</div></div></details><details class="sub-category" id="section-ramen-sub3"><summary>味噌ラーメン<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-10" data-tags="noodle">
 <div class="photo" data-name="味噌ラーメン">写真挿入</div>
 <div class="info">
 <h3>味噌ラーメン</h3>
@@ -728,7 +948,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ramen-11">
+</div><div class="menu-item" data-id="ramen-11" data-tags="noodle">
 <div class="photo" data-name="特製味噌ラーメン">写真挿入</div>
 <div class="info">
 <h3>特製味噌ラーメン</h3>
@@ -738,7 +958,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>豚骨ラーメン<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-12">
+</div></div></details><details class="sub-category" id="section-ramen-sub4"><summary>豚骨ラーメン<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ramen-12" data-tags="pork,noodle">
 <div class="photo" data-name="豚骨ラーメン">写真挿入</div>
 <div class="info">
 <h3>豚骨ラーメン</h3>
@@ -748,7 +968,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ramen-13">
+</div><div class="menu-item" data-id="ramen-13" data-tags="pork,noodle">
 <div class="photo" data-name="特製豚骨ラーメン">写真挿入</div>
 <div class="info">
 <h3>特製豚骨ラーメン</h3>
@@ -765,7 +985,7 @@
 <summary>定食メニュー<span class="cat-count">19品</span></summary>
 <div class="category-body">
 <div class="spec">※ご飯大盛りまで無料</div>
-<div class="subcats"><details class="sub-category"><summary>豚肉系<span class="sub-count">11品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-1">
+<div class="subcats"><details class="sub-category" id="section-teishoku-sub0"><summary>豚肉系<span class="sub-count">11品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-1" data-tags="pork,vegetable,spicy">
 <div class="photo" data-name="豚キムチ炒め定食">写真挿入</div>
 <div class="info">
 <h3>豚キムチ炒め定食</h3>
@@ -775,7 +995,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-2">
+</div><div class="menu-item" data-id="teishoku-2" data-tags="pork,egg">
 <div class="photo" data-name="豚肉と玉子きくらげ炒め定食">写真挿入</div>
 <div class="info">
 <h3>豚肉と玉子きくらげ炒め定食</h3>
@@ -785,7 +1005,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-3">
+</div><div class="menu-item" data-id="teishoku-3" data-tags="pork,spicy">
 <div class="photo" data-name="豚肉とじゃが芋の辛子炒め定食">写真挿入</div>
 <div class="info">
 <h3>豚肉とじゃが芋の辛子炒め定食</h3>
@@ -795,7 +1015,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-4">
+</div><div class="menu-item" data-id="teishoku-4" data-tags="pork">
 <div class="photo" data-name="回鍋肉定食">写真挿入</div>
 <div class="info">
 <h3>回鍋肉定食</h3>
@@ -805,7 +1025,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-5">
+</div><div class="menu-item" data-id="teishoku-5" data-tags="vegetable">
 <div class="photo" data-name="肉野菜炒め定食">写真挿入</div>
 <div class="info">
 <h3>肉野菜炒め定食</h3>
@@ -815,7 +1035,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-11">
+</div><div class="menu-item" data-id="teishoku-11" data-tags="pork,vegetable">
 <div class="photo" data-name="豚肉とニンニク芽炒め定食">写真挿入</div>
 <div class="info">
 <h3>豚肉とニンニク芽炒め定食</h3>
@@ -825,7 +1045,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-12">
+</div><div class="menu-item" data-id="teishoku-12" data-tags="pork,egg,vegetable">
 <div class="photo" data-name="豚肉入りトマト玉子炒め定食">写真挿入</div>
 <div class="info">
 <h3>豚肉入りトマト玉子炒め定食</h3>
@@ -835,7 +1055,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-14">
+</div><div class="menu-item" data-id="teishoku-14" data-tags="pork,egg">
 <div class="photo" data-name="舞茸と豚バラ玉子炒め定食">写真挿入</div>
 <div class="info">
 <h3>舞茸と豚バラ玉子炒め定食</h3>
@@ -845,7 +1065,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-16">
+</div><div class="menu-item" data-id="teishoku-16" data-tags="pork">
 <div class="photo" data-name="酢豚定食">写真挿入</div>
 <div class="info">
 <h3>酢豚定食</h3>
@@ -855,7 +1075,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-17">
+</div><div class="menu-item" data-id="teishoku-17" data-tags="pork">
 <div class="photo" data-name="青椒肉絲定食">写真挿入</div>
 <div class="info">
 <h3>青椒肉絲定食</h3>
@@ -865,7 +1085,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-18">
+</div><div class="menu-item" data-id="teishoku-18" data-tags="pork">
 <div class="photo" data-name="豚の生姜焼き定食">写真挿入</div>
 <div class="info">
 <h3>豚の生姜焼き定食</h3>
@@ -875,7 +1095,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>鶏肉系<span class="sub-count">1品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-8">
+</div></div></details><details class="sub-category" id="section-teishoku-sub1"><summary>鶏肉系<span class="sub-count">1品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-8" data-tags="chicken,fried">
 <div class="photo" data-name="鶏唐揚定食">写真挿入</div>
 <div class="info">
 <h3>鶏唐揚定食</h3>
@@ -885,7 +1105,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>エビ系<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-6">
+</div></div></details><details class="sub-category" id="section-teishoku-sub2"><summary>エビ系<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-6" data-tags="shrimp">
 <div class="photo" data-name="エビマヨ定食">写真挿入</div>
 <div class="info">
 <h3>エビマヨ定食</h3>
@@ -895,7 +1115,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-15">
+</div><div class="menu-item" data-id="teishoku-15" data-tags="shrimp">
 <div class="photo" data-name="エビチリ定食">写真挿入</div>
 <div class="info">
 <h3>エビチリ定食</h3>
@@ -905,7 +1125,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>豆腐・野菜系<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-9">
+</div></div></details><details class="sub-category" id="section-teishoku-sub3"><summary>豆腐・野菜系<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-9" data-tags="tofu,spicy">
 <div class="photo" data-name="麻婆豆腐定食">写真挿入</div>
 <div class="info">
 <h3>麻婆豆腐定食</h3>
@@ -915,7 +1135,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-10">
+</div><div class="menu-item" data-id="teishoku-10" data-tags="vegetable">
 <div class="photo" data-name="ニラレバ炒め定食">写真挿入</div>
 <div class="info">
 <h3>ニラレバ炒め定食</h3>
@@ -925,7 +1145,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-13">
+</div><div class="menu-item" data-id="teishoku-13" data-tags="vegetable,spicy">
 <div class="photo" data-name="麻婆ナス定食">写真挿入</div>
 <div class="info">
 <h3>麻婆ナス定食</h3>
@@ -935,7 +1155,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="teishoku-19">
+</div><div class="menu-item" data-id="teishoku-19" data-tags="vegetable,spicy">
 <div class="photo" data-name="なすとピーマン辛みそ炒め定食">写真挿入</div>
 <div class="info">
 <h3>なすとピーマン辛みそ炒め定食</h3>
@@ -945,7 +1165,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>餃子<span class="sub-count">1品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-7">
+</div></div></details><details class="sub-category" id="section-teishoku-sub4"><summary>餃子<span class="sub-count">1品</span></summary><div class="menu-grid"><div class="menu-item" data-id="teishoku-7" data-tags="dumpling">
 <div class="photo" data-name="餃子定食">写真挿入</div>
 <div class="info">
 <h3>餃子定食</h3>
@@ -963,7 +1183,7 @@
 <div class="category-body">
 <div class="spec">※大盛り＋100円</div>
 <div class="menu-grid">
-<div class="menu-item" data-id="chahan-1">
+<div class="menu-item" data-id="chahan-1" data-tags="rice">
 <div class="photo" data-name="半チャーハン">写真挿入</div>
 <div class="info">
 <h3>半チャーハン</h3>
@@ -974,7 +1194,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="chahan-2">
+<div class="menu-item" data-id="chahan-2" data-tags="rice">
 <div class="photo" data-name="チャーハン">写真挿入</div>
 <div class="info">
 <h3>チャーハン</h3>
@@ -985,7 +1205,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="chahan-3">
+<div class="menu-item" data-id="chahan-3" data-tags="egg,rice">
 <div class="photo" data-name="卵チャーハン">写真挿入</div>
 <div class="info">
 <h3>卵チャーハン</h3>
@@ -996,7 +1216,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="chahan-4">
+<div class="menu-item" data-id="chahan-4" data-tags="seafood,rice">
 <div class="photo" data-name="鮭チャーハン">写真挿入</div>
 <div class="info">
 <h3>鮭チャーハン</h3>
@@ -1007,7 +1227,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="chahan-5">
+<div class="menu-item" data-id="chahan-5" data-tags="vegetable,rice">
 <div class="photo" data-name="野菜チャーハン">写真挿入</div>
 <div class="info">
 <h3>野菜チャーハン</h3>
@@ -1018,7 +1238,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="chahan-6">
+<div class="menu-item" data-id="chahan-6" data-tags="shrimp,rice">
 <div class="photo" data-name="エビチャーハン">写真挿入</div>
 <div class="info">
 <h3>エビチャーハン</h3>
@@ -1029,7 +1249,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="chahan-7">
+<div class="menu-item" data-id="chahan-7" data-tags="vegetable,spicy,rice">
 <div class="photo" data-name="キムチチャーハン">写真挿入</div>
 <div class="info">
 <h3>キムチチャーハン</h3>
@@ -1040,7 +1260,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="chahan-8">
+<div class="menu-item" data-id="chahan-8" data-tags="rice">
 <div class="photo" data-name="スタミナチャーハン">写真挿入</div>
 <div class="info">
 <h3>スタミナチャーハン</h3>
@@ -1051,7 +1271,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="chahan-9">
+<div class="menu-item" data-id="chahan-9" data-tags="rice">
 <div class="photo" data-name="ガーリックチャーハン">写真挿入</div>
 <div class="info">
 <h3>ガーリックチャーハン</h3>
@@ -1062,7 +1282,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="chahan-10">
+<div class="menu-item" data-id="chahan-10" data-tags="pork,rice">
 <div class="photo" data-name="チャーシューチャーハン">写真挿入</div>
 <div class="info">
 <h3>チャーシューチャーハン</h3>
@@ -1081,7 +1301,7 @@
 <div class="category-body">
 <div class="spec">※大盛り＋50円</div>
 <div class="menu-grid">
-<div class="menu-item" data-id="rice-1">
+<div class="menu-item" data-id="rice-1" data-tags="rice">
 <div class="photo" data-name="小ライス">写真挿入</div>
 <div class="info">
 <h3>小ライス</h3>
@@ -1092,7 +1312,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="rice-2">
+<div class="menu-item" data-id="rice-2" data-tags="rice">
 <div class="photo" data-name="ライス">写真挿入</div>
 <div class="info">
 <h3>ライス</h3>
@@ -1103,7 +1323,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="rice-3">
+<div class="menu-item" data-id="rice-3" data-tags="rice">
 <div class="photo" data-name="ミニからし明太ご飯">写真挿入</div>
 <div class="info">
 <h3>ミニからし明太ご飯</h3>
@@ -1114,7 +1334,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="rice-4">
+<div class="menu-item" data-id="rice-4" data-tags="rice">
 <div class="photo" data-name="ミニ明太マヨご飯">写真挿入</div>
 <div class="info">
 <h3>ミニ明太マヨご飯</h3>
@@ -1125,7 +1345,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="rice-5">
+<div class="menu-item" data-id="rice-5" data-tags="pork,rice">
 <div class="photo" data-name="チャーシュー飯">写真挿入</div>
 <div class="info">
 <h3>チャーシュー飯</h3>
@@ -1136,7 +1356,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="rice-6">
+<div class="menu-item" data-id="rice-6" data-tags="spicy,rice">
 <div class="photo" data-name="麻婆丼">写真挿入</div>
 <div class="info">
 <h3>麻婆丼</h3>
@@ -1147,7 +1367,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="rice-7">
+<div class="menu-item" data-id="rice-7" data-tags="rice,fried">
 <div class="photo" data-name="天津飯">写真挿入</div>
 <div class="info">
 <h3>天津飯</h3>
@@ -1164,7 +1384,7 @@
 <details class="menu-category" id="section-ippin">
 <summary>一品料理<span class="cat-count">15品</span></summary>
 <div class="category-body">
-<div class="subcats"><details class="sub-category"><summary>豚肉系<span class="sub-count">8品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ippin-4">
+<div class="subcats"><details class="sub-category" id="section-ippin-sub0"><summary>豚肉系<span class="sub-count">8品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ippin-4" data-tags="pork">
 <div class="photo" data-name="豚の生姜焼き">写真挿入</div>
 <div class="info">
 <h3>豚の生姜焼き</h3>
@@ -1174,7 +1394,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-5">
+</div><div class="menu-item" data-id="ippin-5" data-tags="pork">
 <div class="photo" data-name="回鍋肉">写真挿入</div>
 <div class="info">
 <h3>回鍋肉</h3>
@@ -1184,7 +1404,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-6">
+</div><div class="menu-item" data-id="ippin-6" data-tags="pork,vegetable">
 <div class="photo" data-name="豚肉とニンニク芽炒め">写真挿入</div>
 <div class="info">
 <h3>豚肉とニンニク芽炒め</h3>
@@ -1194,7 +1414,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-7">
+</div><div class="menu-item" data-id="ippin-7" data-tags="pork,egg">
 <div class="photo" data-name="豚と玉子きくらげ炒め">写真挿入</div>
 <div class="info">
 <h3>豚と玉子きくらげ炒め</h3>
@@ -1204,7 +1424,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-8">
+</div><div class="menu-item" data-id="ippin-8" data-tags="pork">
 <div class="photo" data-name="青椒肉絲">写真挿入</div>
 <div class="info">
 <h3>青椒肉絲</h3>
@@ -1214,7 +1434,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-9">
+</div><div class="menu-item" data-id="ippin-9" data-tags="vegetable">
 <div class="photo" data-name="肉野菜炒め">写真挿入</div>
 <div class="info">
 <h3>肉野菜炒め</h3>
@@ -1224,7 +1444,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-12">
+</div><div class="menu-item" data-id="ippin-12" data-tags="pork,egg,vegetable">
 <div class="photo" data-name="豚肉入りトマトと玉子炒め">写真挿入</div>
 <div class="info">
 <h3>豚肉入りトマトと玉子炒め</h3>
@@ -1234,7 +1454,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-15">
+</div><div class="menu-item" data-id="ippin-15" data-tags="pork">
 <div class="photo" data-name="酢豚">写真挿入</div>
 <div class="info">
 <h3>酢豚</h3>
@@ -1244,7 +1464,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>鶏肉系<span class="sub-count">1品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ippin-2">
+</div></div></details><details class="sub-category" id="section-ippin-sub1"><summary>鶏肉系<span class="sub-count">1品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ippin-2" data-tags="chicken">
 <div class="photo" data-name="油淋鶏">写真挿入</div>
 <div class="info">
 <h3>油淋鶏</h3>
@@ -1254,7 +1474,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>エビ系<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ippin-13">
+</div></div></details><details class="sub-category" id="section-ippin-sub2"><summary>エビ系<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ippin-13" data-tags="shrimp">
 <div class="photo" data-name="エビマヨ">写真挿入</div>
 <div class="info">
 <h3>エビマヨ</h3>
@@ -1264,7 +1484,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-14">
+</div><div class="menu-item" data-id="ippin-14" data-tags="shrimp">
 <div class="photo" data-name="エビチリ">写真挿入</div>
 <div class="info">
 <h3>エビチリ</h3>
@@ -1274,7 +1494,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>豆腐・野菜系<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ippin-1">
+</div></div></details><details class="sub-category" id="section-ippin-sub3"><summary>豆腐・野菜系<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="ippin-1" data-tags="vegetable">
 <div class="photo" data-name="エリンギバター">写真挿入</div>
 <div class="info">
 <h3>エリンギバター</h3>
@@ -1284,7 +1504,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-3">
+</div><div class="menu-item" data-id="ippin-3" data-tags="vegetable">
 <div class="photo" data-name="ニラレバ炒め">写真挿入</div>
 <div class="info">
 <h3>ニラレバ炒め</h3>
@@ -1294,7 +1514,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-10">
+</div><div class="menu-item" data-id="ippin-10" data-tags="tofu,spicy">
 <div class="photo" data-name="麻婆豆腐">写真挿入</div>
 <div class="info">
 <h3>麻婆豆腐</h3>
@@ -1304,7 +1524,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="ippin-11">
+</div><div class="menu-item" data-id="ippin-11" data-tags="vegetable,spicy">
 <div class="photo" data-name="麻婆ナス">写真挿入</div>
 <div class="info">
 <h3>麻婆ナス</h3>
@@ -1320,7 +1540,7 @@
 <details class="menu-category" id="section-agemono">
 <summary>揚げ物<span class="cat-count">13品</span></summary>
 <div class="category-body">
-<div class="subcats"><details class="sub-category"><summary>鶏肉系唐揚げ<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="agemono-6">
+<div class="subcats"><details class="sub-category" id="section-agemono-sub0"><summary>鶏肉系唐揚げ<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="agemono-6" data-tags="chicken,fried">
 <div class="photo" data-name="鶏もも肉の唐揚げ">写真挿入</div>
 <div class="info">
 <h3>鶏もも肉の唐揚げ</h3>
@@ -1330,7 +1550,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-7">
+</div><div class="menu-item" data-id="agemono-7" data-tags="chicken,fried">
 <div class="photo" data-name="鶏なんこつ唐揚げ">写真挿入</div>
 <div class="info">
 <h3>鶏なんこつ唐揚げ</h3>
@@ -1340,7 +1560,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-8">
+</div><div class="menu-item" data-id="agemono-8" data-tags="chicken,fried">
 <div class="photo" data-name="砂肝の唐揚げ">写真挿入</div>
 <div class="info">
 <h3>砂肝の唐揚げ</h3>
@@ -1350,7 +1570,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-9">
+</div><div class="menu-item" data-id="agemono-9" data-tags="chicken,dumpling">
 <div class="photo" data-name="とり皮餃子">写真挿入</div>
 <div class="info">
 <h3>とり皮餃子</h3>
@@ -1360,7 +1580,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>魚介系<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="agemono-10">
+</div></div></details><details class="sub-category" id="section-agemono-sub1"><summary>魚介系<span class="sub-count">2品</span></summary><div class="menu-grid"><div class="menu-item" data-id="agemono-10" data-tags="seafood,fried">
 <div class="photo" data-name="ちくわ磯辺揚げ">写真挿入</div>
 <div class="info">
 <h3>ちくわ磯辺揚げ</h3>
@@ -1370,7 +1590,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-13">
+</div><div class="menu-item" data-id="agemono-13" data-tags="chicken,seafood,fried">
 <div class="photo" data-name="タコの唐揚げ">写真挿入</div>
 <div class="info">
 <h3>タコの唐揚げ</h3>
@@ -1380,7 +1600,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>野菜・その他系<span class="sub-count">7品</span></summary><div class="menu-grid"><div class="menu-item" data-id="agemono-1">
+</div></div></details><details class="sub-category" id="section-agemono-sub2"><summary>野菜・その他系<span class="sub-count">7品</span></summary><div class="menu-grid"><div class="menu-item" data-id="agemono-1" data-tags="fried">
 <div class="photo" data-name="ニンニク揚げ">写真挿入</div>
 <div class="info">
 <h3>ニンニク揚げ</h3>
@@ -1390,7 +1610,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-2">
+</div><div class="menu-item" data-id="agemono-2" data-tags="fried">
 <div class="photo" data-name="コロッケ">写真挿入</div>
 <div class="info">
 <h3>コロッケ</h3>
@@ -1400,7 +1620,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-3">
+</div><div class="menu-item" data-id="agemono-3" data-tags="fried">
 <div class="photo" data-name="フライドポテト">写真挿入</div>
 <div class="info">
 <h3>フライドポテト</h3>
@@ -1410,7 +1630,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-4">
+</div><div class="menu-item" data-id="agemono-4" data-tags="vegetable,fried">
 <div class="photo" data-name="揚げ銀杏（期間限定）">写真挿入</div>
 <div class="info">
 <h3>揚げ銀杏（期間限定）</h3>
@@ -1420,7 +1640,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-5">
+</div><div class="menu-item" data-id="agemono-5" data-tags="tofu,fried">
 <div class="photo" data-name="カリッと厚揚げ">写真挿入</div>
 <div class="info">
 <h3>カリッと厚揚げ</h3>
@@ -1430,7 +1650,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-11">
+</div><div class="menu-item" data-id="agemono-11" data-tags="vegetable,fried">
 <div class="photo" data-name="まいたけ天">写真挿入</div>
 <div class="info">
 <h3>まいたけ天</h3>
@@ -1440,7 +1660,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="agemono-12">
+</div><div class="menu-item" data-id="agemono-12" data-tags="vegetable,fried">
 <div class="photo" data-name="レンコン挟み揚げ">写真挿入</div>
 <div class="info">
 <h3>レンコン挟み揚げ</h3>
@@ -1457,7 +1677,7 @@
 <summary>焼き物<span class="cat-count">6品</span></summary>
 <div class="category-body">
 <div class="menu-grid">
-<div class="menu-item" data-id="yakimono-1">
+<div class="menu-item" data-id="yakimono-1" data-tags="vegetable">
 <div class="photo" data-name="焼きナス">写真挿入</div>
 <div class="info">
 <h3>焼きナス</h3>
@@ -1468,7 +1688,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="yakimono-2">
+<div class="menu-item" data-id="yakimono-2" data-tags="seafood">
 <div class="photo" data-name="子持ちシシャモ焼き">写真挿入</div>
 <div class="info">
 <h3>子持ちシシャモ焼き</h3>
@@ -1479,7 +1699,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="yakimono-3">
+<div class="menu-item" data-id="yakimono-3" data-tags="seafood">
 <div class="photo" data-name="さば塩焼き">写真挿入</div>
 <div class="info">
 <h3>さば塩焼き</h3>
@@ -1490,7 +1710,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="yakimono-4">
+<div class="menu-item" data-id="yakimono-4" data-tags="seafood">
 <div class="photo" data-name="縞ホッケ焼き（半身）">写真挿入</div>
 <div class="info">
 <h3>縞ホッケ焼き（半身）</h3>
@@ -1501,7 +1721,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="yakimono-5">
+<div class="menu-item" data-id="yakimono-5" data-tags="pork">
 <div class="photo" data-name="豚肩ロース塩胡椒焼き">写真挿入</div>
 <div class="info">
 <h3>豚肩ロース塩胡椒焼き</h3>
@@ -1512,7 +1732,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="yakimono-6">
+<div class="menu-item" data-id="yakimono-6" data-tags="chicken">
 <div class="photo" data-name="若鶏柚子塩胡椒焼き">写真挿入</div>
 <div class="info">
 <h3>若鶏柚子塩胡椒焼き</h3>
@@ -1530,7 +1750,7 @@
 <summary>サラダ<span class="cat-count">4品</span></summary>
 <div class="category-body">
 <div class="menu-grid">
-<div class="menu-item" data-id="salad-1">
+<div class="menu-item" data-id="salad-1" data-tags="vegetable">
 <div class="photo" data-name="キャベツサラダ">写真挿入</div>
 <div class="info">
 <h3>キャベツサラダ</h3>
@@ -1541,7 +1761,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="salad-2">
+<div class="menu-item" data-id="salad-2" data-tags="vegetable">
 <div class="photo" data-name="なすみょうがサラダ">写真挿入</div>
 <div class="info">
 <h3>なすみょうがサラダ</h3>
@@ -1552,7 +1772,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="salad-3">
+<div class="menu-item" data-id="salad-3" data-tags="vegetable">
 <div class="photo" data-name="アスパラサラダ">写真挿入</div>
 <div class="info">
 <h3>アスパラサラダ</h3>
@@ -1563,7 +1783,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="salad-4">
+<div class="menu-item" data-id="salad-4" data-tags="egg,vegetable">
 <div class="photo" data-name="温玉入りシーザーサラダ">写真挿入</div>
 <div class="info">
 <h3>温玉入りシーザーサラダ</h3>
@@ -1581,7 +1801,7 @@
 <summary>点心類<span class="cat-count">8品</span></summary>
 <div class="category-body">
 <div class="menu-grid">
-<div class="menu-item" data-id="tenshin-1">
+<div class="menu-item" data-id="tenshin-1" data-tags="dumpling">
 <div class="photo" data-name="焼き小龍包（4個入り）">写真挿入</div>
 <div class="info">
 <h3>焼き小龍包（4個入り）</h3>
@@ -1592,7 +1812,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="tenshin-2">
+<div class="menu-item" data-id="tenshin-2" data-tags="dumpling">
 <div class="photo" data-name="明太チーズ春巻">写真挿入</div>
 <div class="info">
 <h3>明太チーズ春巻</h3>
@@ -1603,7 +1823,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="tenshin-3">
+<div class="menu-item" data-id="tenshin-3" data-tags="dumpling">
 <div class="photo" data-name="焼き餃子（5個入り）">写真挿入</div>
 <div class="info">
 <h3>焼き餃子（5個入り）</h3>
@@ -1614,7 +1834,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="tenshin-4">
+<div class="menu-item" data-id="tenshin-4" data-tags="dumpling">
 <div class="photo" data-name="ネギマヨ餃子（5個入り）">写真挿入</div>
 <div class="info">
 <h3>ネギマヨ餃子（5個入り）</h3>
@@ -1625,7 +1845,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="tenshin-5">
+<div class="menu-item" data-id="tenshin-5" data-tags="dumpling">
 <div class="photo" data-name="水餃子（7個入り）">写真挿入</div>
 <div class="info">
 <h3>水餃子（7個入り）</h3>
@@ -1636,7 +1856,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="tenshin-6">
+<div class="menu-item" data-id="tenshin-6" data-tags="dumpling">
 <div class="photo" data-name="春巻（3本入り）">写真挿入</div>
 <div class="info">
 <h3>春巻（3本入り）</h3>
@@ -1647,7 +1867,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="tenshin-7">
+<div class="menu-item" data-id="tenshin-7" data-tags="dumpling">
 <div class="photo" data-name="小籠包（4個入り）">写真挿入</div>
 <div class="info">
 <h3>小籠包（4個入り）</h3>
@@ -1658,7 +1878,7 @@
 </div>
 </div>
 </div>
-<div class="menu-item" data-id="tenshin-8">
+<div class="menu-item" data-id="tenshin-8" data-tags="dumpling">
 <div class="photo" data-name="シュウマイ（4個入り）">写真挿入</div>
 <div class="info">
 <h3>シュウマイ（4個入り）</h3>
@@ -1675,7 +1895,7 @@
 <details class="menu-category" id="section-otsumami">
 <summary>おつまみ<span class="cat-count">17品</span></summary>
 <div class="category-body">
-<div class="subcats"><details class="sub-category"><summary>冷菜・野菜系<span class="sub-count">8品</span></summary><div class="menu-grid"><div class="menu-item" data-id="otsumami-2">
+<div class="subcats"><details class="sub-category" id="section-otsumami-sub0"><summary>冷菜・野菜系<span class="sub-count">8品</span></summary><div class="menu-grid"><div class="menu-item" data-id="otsumami-2" data-tags="appetizer">
 <div class="photo" data-name="冷奴">写真挿入</div>
 <div class="info">
 <h3>冷奴</h3>
@@ -1685,7 +1905,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-3">
+</div><div class="menu-item" data-id="otsumami-3" data-tags="vegetable">
 <div class="photo" data-name="枝豆">写真挿入</div>
 <div class="info">
 <h3>枝豆</h3>
@@ -1695,7 +1915,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-4">
+</div><div class="menu-item" data-id="otsumami-4" data-tags="vegetable,spicy">
 <div class="photo" data-name="キムチ">写真挿入</div>
 <div class="info">
 <h3>キムチ</h3>
@@ -1705,7 +1925,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-5">
+</div><div class="menu-item" data-id="otsumami-5" data-tags="appetizer">
 <div class="photo" data-name="もろキュー">写真挿入</div>
 <div class="info">
 <h3>もろキュー</h3>
@@ -1715,7 +1935,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-6">
+</div><div class="menu-item" data-id="otsumami-6" data-tags="appetizer">
 <div class="photo" data-name="メンマ">写真挿入</div>
 <div class="info">
 <h3>メンマ</h3>
@@ -1725,7 +1945,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-9">
+</div><div class="menu-item" data-id="otsumami-9" data-tags="vegetable,appetizer">
 <div class="photo" data-name="冷やしトマト">写真挿入</div>
 <div class="info">
 <h3>冷やしトマト</h3>
@@ -1735,7 +1955,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-10">
+</div><div class="menu-item" data-id="otsumami-10" data-tags="vegetable,appetizer">
 <div class="photo" data-name="たたきキュウリ">写真挿入</div>
 <div class="info">
 <h3>たたきキュウリ</h3>
@@ -1745,7 +1965,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-15">
+</div><div class="menu-item" data-id="otsumami-15" data-tags="vegetable,fried">
 <div class="photo" data-name="野菜さつま揚げ">写真挿入</div>
 <div class="info">
 <h3>野菜さつま揚げ</h3>
@@ -1755,7 +1975,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>卵・豆腐系<span class="sub-count">5品</span></summary><div class="menu-grid"><div class="menu-item" data-id="otsumami-1">
+</div></div></details><details class="sub-category" id="section-otsumami-sub1"><summary>卵・豆腐系<span class="sub-count">5品</span></summary><div class="menu-grid"><div class="menu-item" data-id="otsumami-1" data-tags="appetizer">
 <div class="photo" data-name="味玉">写真挿入</div>
 <div class="info">
 <h3>味玉</h3>
@@ -1765,7 +1985,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-7">
+</div><div class="menu-item" data-id="otsumami-7" data-tags="egg">
 <div class="photo" data-name="ピータン">写真挿入</div>
 <div class="info">
 <h3>ピータン</h3>
@@ -1775,7 +1995,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-8">
+</div><div class="menu-item" data-id="otsumami-8" data-tags="egg,tofu">
 <div class="photo" data-name="ピータン豆腐">写真挿入</div>
 <div class="info">
 <h3>ピータン豆腐</h3>
@@ -1785,7 +2005,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-11">
+</div><div class="menu-item" data-id="otsumami-11" data-tags="egg">
 <div class="photo" data-name="玉子焼き">写真挿入</div>
 <div class="info">
 <h3>玉子焼き</h3>
@@ -1795,7 +2015,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-12">
+</div><div class="menu-item" data-id="otsumami-12" data-tags="seafood,egg">
 <div class="photo" data-name="しらすオムレツ">写真挿入</div>
 <div class="info">
 <h3>しらすオムレツ</h3>
@@ -1805,7 +2025,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category"><summary>肉・魚系<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="otsumami-13">
+</div></div></details><details class="sub-category" id="section-otsumami-sub2"><summary>肉・魚系<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="otsumami-13" data-tags="appetizer">
 <div class="photo" data-name="合鴨ロース">写真挿入</div>
 <div class="info">
 <h3>合鴨ロース</h3>
@@ -1815,7 +2035,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-14">
+</div><div class="menu-item" data-id="otsumami-14" data-tags="appetizer">
 <div class="photo" data-name="ガツ刺し">写真挿入</div>
 <div class="info">
 <h3>ガツ刺し</h3>
@@ -1825,7 +2045,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-16">
+</div><div class="menu-item" data-id="otsumami-16" data-tags="pork">
 <div class="photo" data-name="おつまみチャーシュー">写真挿入</div>
 <div class="info">
 <h3>おつまみチャーシュー</h3>
@@ -1835,7 +2055,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div><div class="menu-item" data-id="otsumami-17">
+</div><div class="menu-item" data-id="otsumami-17" data-tags="pork,appetizer">
 <div class="photo" data-name="三種盛り（メンマ、チャーシュー、味玉）">写真挿入</div>
 <div class="info">
 <h3>三種盛り（メンマ、チャーシュー、味玉）</h3>
@@ -1848,12 +2068,6 @@
 </div></div></details></div>
 </div>
 </details>
-<details class="menu-category" id="section-favorites">
-<summary>お気に入り登録一覧<span class="cat-count"></span></summary>
-<div class="category-body">
-<div id="favoritesList"></div>
-</div>
-</details>
 </div>
 </main>
 <!-- 常に表示される「全部閉じる」ボタン -->
@@ -1861,16 +2075,35 @@
 <span class="collapse-fab-icon">⤴</span>
 <span>すべて閉じる</span>
 </button>
-<!-- 常に表示される「目次」ボタン -->
-<button aria-label="目次を開く" class="toc-fab" id="tocOpenBtn" type="button">
-<span class="toc-fab-icon">☰</span>
-<span>目次</span>
+<!-- 常に表示される「お気に入り」ボタン -->
+<button aria-label="お気に入り一覧を開く" class="fav-fab" id="favFabBtn" type="button">
+<span class="fav-fab-icon">⭐</span>
+<span>お気に入り</span>
+<span class="fav-fab-badge" id="favFabBadge">0</span>
 </button>
-<div class="toc-panel-overlay" id="tocOverlay"></div>
-<div class="toc-panel" id="tocPanel" style="display:none;">
-<div class="toc-panel-title">目次</div>
-<a class="toc-top-link" href="#top" id="tocTopLink">▲ 先頭へ戻る</a>
-<div id="tocPanelList"></div>
+<!-- 左上ハンバーガーボタン（目次） -->
+<button aria-label="メニューを開く" class="hamburger-btn" id="hamburgerBtn" type="button">☰</button>
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer-panel" id="drawerPanel">
+<div class="drawer-header">
+<span>目次</span>
+<button aria-label="閉じる" class="drawer-close" id="drawerCloseBtn" type="button">×</button>
+</div>
+<a class="drawer-top-link" href="#top" id="drawerTopLink">▲ 先頭へ戻る</a>
+<div class="drawer-section-title">目次</div>
+<div id="drawerTocList"></div>
+</div>
+<!-- お気に入り専用パネル -->
+<div class="fav-panel-overlay" id="favPanelOverlay"></div>
+<div class="fav-panel" id="favPanel">
+<div class="fav-panel-header">
+<span>⭐ お気に入り一覧</span>
+<button aria-label="閉じる" class="fav-panel-close" id="favPanelCloseBtn" type="button">×</button>
+</div>
+<div class="fav-panel-body">
+<div class="fav-panel-hint">タップするとそのメニューへジャンプします</div>
+<div id="favoritesList"></div>
+</div>
 </div>
 <!-- 画像拡大モーダル -->
 <div class="modal" id="imageModal">
@@ -1882,9 +2115,12 @@
 </div>
 <script>
 // ===== お気に入り登録機能（localStorageのみ・外部通信なし） =====
+let renderFavoritesList; // 他のIIFEからも呼べるようにスコープを広げておく
+
 window.addEventListener('load', function() {
 
   const allMenuItems = document.querySelectorAll('.menu-item');
+  const favFabBadge = document.getElementById('favFabBadge');
 
   allMenuItems.forEach(function(menu) {
     const menuId = menu.dataset.id;
@@ -1907,7 +2143,7 @@ window.addEventListener('load', function() {
   });
 
   // ===== お気に入り登録一覧の表示を更新 =====
-  function renderFavoritesList() {
+  renderFavoritesList = function() {
     const listEl = document.getElementById('favoritesList');
     const favorites = [];
 
@@ -1917,9 +2153,18 @@ window.addEventListener('load', function() {
       if (isLiked) {
         const name = menu.querySelector('h3').textContent;
         const price = menu.querySelector('.price').textContent;
-        favorites.push({ name: name, price: price });
+        favorites.push({ id: menuId, name: name, price: price });
       }
     });
+
+    if (favFabBadge) {
+      if (favorites.length > 0) {
+        favFabBadge.textContent = favorites.length;
+        favFabBadge.classList.add('active');
+      } else {
+        favFabBadge.classList.remove('active');
+      }
+    }
 
     if (favorites.length === 0) {
       listEl.innerHTML = '<p class="favorites-empty">お気に入り登録すると表示されます</p>';
@@ -1927,12 +2172,19 @@ window.addEventListener('load', function() {
     }
 
     listEl.innerHTML = favorites.map(function(item) {
-      return '<div class="favorite-entry">' +
-             '<span class="fav-name">' + item.name + '</span>' +
+      return '<div class="favorite-entry" data-jump-id="' + item.id + '">' +
+             '<span class="fav-name">' + item.name + '<span class="fav-jump">▶ タップでジャンプ</span></span>' +
              '<span class="fav-price">' + item.price + '</span>' +
              '</div>';
     }).join('');
-  }
+
+    // ジャンプ用クリックイベントを付与
+    listEl.querySelectorAll('.favorite-entry').forEach(function(entry) {
+      entry.addEventListener('click', function() {
+        jumpToMenuItem(entry.dataset.jumpId);
+      });
+    });
+  };
 
   renderFavoritesList();
 
@@ -1949,6 +2201,40 @@ window.addEventListener('load', function() {
   });
 
 });
+
+// ===== お気に入り一覧からのジャンプ機能 =====
+function jumpToMenuItem(menuId) {
+  const target = document.querySelector('.menu-item[data-id="' + menuId + '"]');
+  if (!target) return;
+
+  // 検索結果表示中なら解除する
+  const searchInput = document.getElementById('menuSearchInput');
+  if (searchInput && searchInput.value.trim() !== '') {
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+  }
+
+  // 祖先のdetails（カテゴリ・サブカテゴリ）をすべて開く
+  let el = target.parentElement;
+  while (el) {
+    if (el.tagName === 'DETAILS') {
+      el.setAttribute('open', '');
+    }
+    el = el.parentElement;
+  }
+
+  // パネル・ドロワーを閉じる
+  closeFavPanel();
+  closeDrawer();
+
+  setTimeout(function() {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.classList.remove('jump-highlight');
+    // 強制リフローしてアニメーションを再トリガー
+    void target.offsetWidth;
+    target.classList.add('jump-highlight');
+  }, 220);
+}
 
 // ===== 画像クリックで拡大表示 =====
 const modal = document.getElementById('imageModal');
@@ -1982,13 +2268,33 @@ if (collapseAllBtn) {
   });
 }
 
-// ===== 「目次」ボタン：カテゴリ一覧パネルの開閉とジャンプ =====
+// ===== お気に入り専用パネルの開閉 =====
+const favPanel = document.getElementById('favPanel');
+const favPanelOverlay = document.getElementById('favPanelOverlay');
+const favFabBtn = document.getElementById('favFabBtn');
+const favPanelCloseBtn = document.getElementById('favPanelCloseBtn');
+
+function openFavPanel() {
+  favPanel.classList.add('active');
+  favPanelOverlay.classList.add('active');
+}
+function closeFavPanel() {
+  favPanel.classList.remove('active');
+  favPanelOverlay.classList.remove('active');
+}
+if (favFabBtn) favFabBtn.addEventListener('click', openFavPanel);
+if (favPanelOverlay) favPanelOverlay.addEventListener('click', closeFavPanel);
+if (favPanelCloseBtn) favPanelCloseBtn.addEventListener('click', closeFavPanel);
+
+// ===== 左上ハンバーガー：目次ドロワーの開閉とジャンプ =====
+let closeDrawer = function() {}; // フォールバック（後で上書き）
 (function() {
-  const tocOpenBtn = document.getElementById('tocOpenBtn');
-  const tocPanel = document.getElementById('tocPanel');
-  const tocOverlay = document.getElementById('tocOverlay');
-  const tocPanelList = document.getElementById('tocPanelList');
-  const tocTopLink = document.getElementById('tocTopLink');
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const drawerPanel = document.getElementById('drawerPanel');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+  const drawerTocList = document.getElementById('drawerTocList');
+  const drawerTopLink = document.getElementById('drawerTopLink');
 
   // カテゴリ一覧をmenu-categoryのsummaryから自動生成
   document.querySelectorAll('details.menu-category').forEach(function(cat) {
@@ -2000,32 +2306,146 @@ if (collapseAllBtn) {
       .join('').trim();
     if (!cloneText) return;
     const link = document.createElement('a');
+    link.className = 'drawer-cat-link';
     link.href = '#' + cat.id;
     link.textContent = cloneText;
     link.addEventListener('click', function(e) {
       e.preventDefault();
       cat.setAttribute('open', '');
-      closeTocPanel();
+      closeDrawer();
       setTimeout(function() {
         cat.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 50);
     });
-    tocPanelList.appendChild(link);
+    drawerTocList.appendChild(link);
   });
 
-  function openTocPanel() {
-    tocPanel.style.display = 'block';
-    tocOverlay.classList.add('active');
+  function openDrawer() {
+    drawerPanel.classList.add('active');
+    drawerOverlay.classList.add('active');
   }
-  function closeTocPanel() {
-    tocPanel.style.display = 'none';
-    tocOverlay.classList.remove('active');
+  closeDrawer = function() {
+    drawerPanel.classList.remove('active');
+    drawerOverlay.classList.remove('active');
+  };
+
+  hamburgerBtn.addEventListener('click', openDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+  drawerCloseBtn.addEventListener('click', closeDrawer);
+  drawerTopLink.addEventListener('click', function() {
+    setTimeout(closeDrawer, 50);
+  });
+})();
+
+// ===== メニュー検索 =====
+(function() {
+  const input = document.getElementById('menuSearchInput');
+  const clearBtn = document.getElementById('menuSearchClearBtn');
+  const noResult = document.getElementById('searchNoResult');
+  const hitCount = document.getElementById('searchHitCount');
+  const resultsGrid = document.getElementById('searchResultsGrid');
+  const menuList = document.querySelector('.menu-list');
+  const allItems = Array.from(document.querySelectorAll('.menu-list .menu-item'));
+
+  function normalize(str) {
+    return str
+      .toLowerCase()
+      .replace(/[\u30a1-\u30f6]/g, function(ch) {
+        return String.fromCharCode(ch.charCodeAt(0) - 0x60);
+      })
+      .replace(/\s+/g, '');
   }
 
-  tocOpenBtn.addEventListener('click', openTocPanel);
-  tocOverlay.addEventListener('click', closeTocPanel);
-  tocTopLink.addEventListener('click', function() {
-    setTimeout(closeTocPanel, 50);
+  // 漢字表記 → 読み（ひらがな）の対応表。該当する語が商品名に含まれていたら
+  // 読みも検索対象テキストに追加し、「味噌」でも「みそ」でも一致するようにする
+  const READINGS = [
+    ['味噌', 'みそ'], ['豚肉', 'ぶたにく'], ['豚', 'ぶた'], ['鶏肉', 'とりにく'],
+    ['鶏', 'とり'], ['野菜', 'やさい'], ['辛子', 'からし'], ['辛', 'から'],
+    ['生姜焼き', 'しょうがやき'], ['生姜', 'しょうが'], ['餃子', 'ぎょうざ'],
+    ['春巻', 'はるまき'], ['唐揚', 'からあげ'], ['玉子', 'たまご'], ['卵', 'たまご'],
+    ['豆腐', 'とうふ'], ['厚揚げ', 'あつあげ'], ['天津飯', 'てんしんはん'],
+    ['酢豚', 'すぶた'], ['麻婆', 'まーぼー'], ['塩', 'しお'], ['醤油', 'しょうゆ'],
+    ['冷奴', 'ひややっこ'], ['枝豆', 'えだまめ'], ['冷やし', 'ひやし'],
+    ['焼き', 'やき'], ['揚げ', 'あげ'], ['炒め', 'いため'], ['煮込み', 'にこみ'],
+    ['麺', 'めん'], ['飯', 'めし'], ['肉', 'にく'], ['魚', 'さかな'],
+    ['小籠包', 'しょうろんぽう'], ['小龍包', 'しょうろんぽう'], ['水餃子', 'すいぎょうざ'],
+    ['特製', 'とくせい'], ['並盛', 'なみもり'], ['大盛', 'おおもり']
+  ].map(function(pair) { return [pair[0], normalize(pair[1])]; });
+
+  function buildSearchText(name) {
+    const norm = normalize(name);
+    let extra = '';
+    READINGS.forEach(function(pair) {
+      if (name.indexOf(pair[0]) !== -1) {
+        extra += pair[1];
+      }
+    });
+    return norm + extra;
+  }
+
+  // 元の位置（親要素）を記憶しておき、解除時に完全に元通り戻せるようにする
+  const itemData = allItems.map(function(item) {
+    const h3 = item.querySelector('h3');
+    const nameText = h3 ? h3.textContent : '';
+    return {
+      el: item,
+      normName: buildSearchText(nameText),
+      originalParent: item.parentNode
+    };
+  });
+
+  let isSearching = false;
+
+  function resetView() {
+    if (isSearching) {
+      itemData.forEach(function(d) {
+        d.originalParent.appendChild(d.el);
+      });
+    }
+    isSearching = false;
+    menuList.style.display = '';
+    resultsGrid.style.display = 'none';
+    resultsGrid.innerHTML = '';
+    document.querySelectorAll('details.menu-category, details.sub-category').forEach(function(d) {
+      d.removeAttribute('open');
+    });
+    noResult.classList.remove('active');
+    hitCount.classList.remove('active');
+  }
+
+  function runSearch() {
+    const raw = input.value.trim();
+    if (!raw) {
+      resetView();
+      return;
+    }
+    isSearching = true;
+    const q = normalize(raw);
+    let hits = 0;
+
+    menuList.style.display = 'none';
+    resultsGrid.innerHTML = '';
+
+    itemData.forEach(function(d) {
+      if (d.normName.indexOf(q) !== -1) {
+        resultsGrid.appendChild(d.el);
+        hits++;
+      } else if (d.el.parentNode === resultsGrid) {
+        d.originalParent.appendChild(d.el);
+      }
+    });
+
+    resultsGrid.style.display = hits > 0 ? 'grid' : 'none';
+    noResult.classList.toggle('active', hits === 0);
+    hitCount.classList.toggle('active', hits > 0);
+    hitCount.textContent = hits + '件見つかりました';
+  }
+
+  input.addEventListener('input', runSearch);
+  clearBtn.addEventListener('click', function() {
+    input.value = '';
+    resetView();
+    input.focus();
   });
 })();
 </script>
