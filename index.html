@@ -85,6 +85,9 @@
         .photo:hover {
             transform: scale(1.05);
         }
+        .photo:active {
+            transform: scale(0.96);
+        }
         .info {
             flex: 1;
             display: flex;
@@ -267,11 +270,17 @@
             background-color: #f8f8f8;
             border: 1px solid #ccc;
             color: #444;
-            padding: 5px 12px;
-            border-radius: 20px;
+            padding: 10px 18px;
+            min-height: 44px;
+            min-width: 44px;
+            border-radius: 22px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: rgba(230,57,70,0.25);
         }
         .like-btn.active {
             background-color: #e63946;
@@ -282,9 +291,83 @@
             opacity: 0.9;
             transform: scale(1.03);
         }
+        .like-btn:active {
+            transform: scale(0.97);
+        }
         /* いいね数表示：完全に非表示（集計・表示はしない仕様） */
         .like-count {
             display: none;
+        }
+
+        /* ===== 本日のおすすめ ===== */
+        .recommend-section {
+            display: none;
+            margin: 4px 0 20px;
+        }
+        .recommend-section.active {
+            display: block;
+        }
+        .recommend-title {
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: #8b4513;
+            margin-bottom: 10px;
+            padding: 0 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .recommend-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px 4px 12px;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+        }
+        .recommend-card {
+            flex: 0 0 auto;
+            width: 148px;
+            background: #fff;
+            border: 2px solid #f6d19a;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+            padding: 10px;
+            scroll-snap-align: start;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.15s;
+        }
+        .recommend-card:active {
+            transform: scale(0.97);
+        }
+        .recommend-card .recommend-badge {
+            position: absolute;
+            top: -9px;
+            left: 8px;
+            background: #e63946;
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: bold;
+            padding: 3px 9px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        .recommend-card .photo {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 8px;
+        }
+        .recommend-card h4 {
+            font-size: 0.85rem;
+            line-height: 1.35;
+            margin-bottom: 3px;
+            min-height: 2.4em;
+        }
+        .recommend-card .price {
+            color: #c0392b;
+            font-weight: bold;
+            font-size: 0.9rem;
         }
 
         /* ===== お気に入り登録一覧 ===== */
@@ -697,6 +780,10 @@
 <div class="search-hit-count" id="searchHitCount"></div>
 <div class="search-no-result" id="searchNoResult">該当する商品が見つかりませんでした</div>
 <div class="menu-grid" id="searchResultsGrid" style="display:none; padding: 0 16px;"></div>
+<div class="recommend-section" id="recommendSection">
+<div class="recommend-title">🔥 本日のおすすめ</div>
+<div class="recommend-scroll" id="recommendScroll"></div>
+</div>
 <main>
 <div class="menu-list">
 <details class="menu-category" id="section-tsukemen">
@@ -2188,17 +2275,110 @@ window.addEventListener('load', function() {
 
   renderFavoritesList();
 
-  // ===== 画像を自動反映（imagesフォルダに data-id.jpg を置くと自動表示） =====
-  allMenuItems.forEach(function(item) {
-    const id = item.dataset.id;
-    const photo = item.querySelector('.photo');
+  // ===== 画像の遅延読み込み（IntersectionObserver） =====
+  // 画面に近づいた写真だけ images/<id>.jpg を読み込む。読み込み済みは再取得しない。
+  function loadPhotoImage(photo, forcedId) {
+    if (!photo || photo.dataset.loaded === 'true') return;
+    const container = photo.closest('[data-id]');
+    const id = forcedId || (container ? container.dataset.id : null);
+    if (!id) return;
     const img = new Image();
     img.onload = function() {
       photo.style.backgroundImage = "url('images/" + id + ".jpg')";
       photo.textContent = '';
+      photo.dataset.loaded = 'true';
+    };
+    img.onerror = function() {
+      photo.dataset.loaded = 'true'; // 見つからない場合は再試行しない
     };
     img.src = 'images/' + id + '.jpg';
+  }
+
+  let lazyImageObserver = null;
+  if ('IntersectionObserver' in window) {
+    lazyImageObserver = new IntersectionObserver(function(entries, obs) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          loadPhotoImage(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '300px 0px', threshold: 0.01 });
+  }
+
+  allMenuItems.forEach(function(item) {
+    const photo = item.querySelector('.photo');
+    if (!photo) return;
+    if (lazyImageObserver) {
+      lazyImageObserver.observe(photo);
+    } else {
+      loadPhotoImage(photo); // 古いブラウザ向けフォールバック：即時読み込み
+    }
   });
+
+  // ===== 本日のおすすめ =====
+  // 差し替えたい場合は下の配列に商品の data-id を並べる（店舗側での編集機能は別途検討中）
+  const DEFAULT_RECOMMEND_IDS = ['tsukemen-2', 'ramen-2', 'teishoku-18', 'chahan-2', 'tenshin-3'];
+
+  function getRecommendIds() {
+    try {
+      const saved = localStorage.getItem('recommendedIds');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_RECOMMEND_IDS;
+  }
+
+  function renderRecommend() {
+    const section = document.getElementById('recommendSection');
+    const scroll = document.getElementById('recommendScroll');
+    if (!section || !scroll) return;
+
+    const ids = getRecommendIds();
+    const cards = [];
+
+    ids.forEach(function(id) {
+      const source = document.querySelector('.menu-item[data-id="' + id + '"]');
+      if (!source) return;
+      const name = source.querySelector('h3') ? source.querySelector('h3').textContent : '';
+      const price = source.querySelector('.price') ? source.querySelector('.price').textContent : '';
+
+      const card = document.createElement('div');
+      card.className = 'recommend-card';
+      card.dataset.id = id;
+      card.innerHTML =
+        '<span class="recommend-badge">おすすめ</span>' +
+        '<div class="photo" data-name="' + name + '">写真挿入</div>' +
+        '<h4>' + name + '</h4>' +
+        '<p class="price">' + price + '</p>';
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('.photo')) return; // 写真タップは拡大表示（モーダル）に任せる
+        jumpToMenuItem(id);
+      });
+      cards.push(card);
+    });
+
+    scroll.innerHTML = '';
+    cards.forEach(function(card) { scroll.appendChild(card); });
+
+    if (cards.length > 0) {
+      section.classList.add('active');
+      cards.forEach(function(card) {
+        const photo = card.querySelector('.photo');
+        if (lazyImageObserver) {
+          lazyImageObserver.observe(photo);
+        } else {
+          loadPhotoImage(photo);
+        }
+      });
+    } else {
+      section.classList.remove('active');
+    }
+  }
+
+  renderRecommend();
 
 });
 
@@ -2245,7 +2425,9 @@ const closeBtn = document.querySelector('.modal-close');
 document.addEventListener('click', function(e) {
   const photo = e.target.closest('.photo');
   if (photo) {
-    const menuId = photo.closest('.menu-item').dataset.id;
+    const container = photo.closest('.menu-item, .recommend-card');
+    if (!container) return;
+    const menuId = container.dataset.id;
     const menuName = photo.dataset.name;
     modalBody.innerHTML = '<img src="images/' + menuId + '.jpg" alt="' + menuName + '" class="modal-img" onerror="this.parentElement.textContent=\'画像準備中：' + menuName + '\'">';
     modalTitle.textContent = menuName;
