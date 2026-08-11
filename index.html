@@ -2241,7 +2241,36 @@
 </div>
 </div>
 <script>
-// ===== お気に入り登録機能（localStorageのみ・外部通信なし） =====
+// ===== お気に入り登録機能（localStorageで即時反映 + Base44へ統計送信） =====
+
+const FAVORITE_API_BASE = 'https://haruki-dipping-craft.base44.app/functions';
+
+// 端末ごとの匿名ID（統計の重複カウント防止に使うだけで、お客さんには表示されません）
+function getDeviceId() {
+  const key = 'haruki_device_id';
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = (crypto.randomUUID ? crypto.randomUUID() : (Date.now() + '-' + Math.random()));
+    localStorage.setItem(key, id);
+  }
+  return id;
+}
+
+// 店舗側の統計用にBase44へ送信（失敗してもお客さんの操作は妨げない）
+function sendFavoriteEvent(itemId, isLiked) {
+  fetch(FAVORITE_API_BASE + '/setFavorite', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      item_id: itemId,
+      device_id: getDeviceId(),
+      is_favorited: isLiked
+    })
+  }).catch(function(err) {
+    console.warn('お気に入り統計の送信に失敗しました', err);
+  });
+}
+
 let renderFavoritesList; // 他のIIFEからも呼べるようにスコープを広げておく
 
 window.addEventListener('load', function() {
@@ -2265,6 +2294,7 @@ window.addEventListener('load', function() {
       isLiked = !isLiked;
       likeButton.classList.toggle('active', isLiked);
       localStorage.setItem('like_' + menuId, isLiked.toString());
+      sendFavoriteEvent(menuId, isLiked); // ← Base44へ統計を送る
       renderFavoritesList();
     });
   });
@@ -2316,7 +2346,6 @@ window.addEventListener('load', function() {
   renderFavoritesList();
 
   // ===== 画像の遅延読み込み（IntersectionObserver） =====
-  // 画面に近づいた写真だけ images/<id>.jpg を読み込む。読み込み済みは再取得しない。
   function loadPhotoImage(photo, forcedId) {
     if (!photo || photo.dataset.loaded === 'true') return;
     const container = photo.closest('[data-id]');
@@ -2329,7 +2358,7 @@ window.addEventListener('load', function() {
       photo.dataset.loaded = 'true';
     };
     img.onerror = function() {
-      photo.dataset.loaded = 'true'; // 見つからない場合は再試行しない
+      photo.dataset.loaded = 'true';
     };
     img.src = 'images/' + id + '.jpg';
   }
@@ -2352,7 +2381,7 @@ window.addEventListener('load', function() {
     if (lazyImageObserver) {
       lazyImageObserver.observe(photo);
     } else {
-      loadPhotoImage(photo); // 古いブラウザ向けフォールバック：即時読み込み
+      loadPhotoImage(photo);
     }
   });
 
@@ -2363,14 +2392,12 @@ function jumpToMenuItem(menuId) {
   const target = document.querySelector('.menu-item[data-id="' + menuId + '"]');
   if (!target) return;
 
-  // 検索結果表示中なら解除する
   const searchInput = document.getElementById('menuSearchInput');
   if (searchInput && searchInput.value.trim() !== '') {
     searchInput.value = '';
     searchInput.dispatchEvent(new Event('input'));
   }
 
-  // 祖先のdetails（カテゴリ・サブカテゴリ）をすべて開く
   let el = target.parentElement;
   while (el) {
     if (el.tagName === 'DETAILS') {
@@ -2379,14 +2406,12 @@ function jumpToMenuItem(menuId) {
     el = el.parentElement;
   }
 
-  // パネル・ドロワーを閉じる
   closeFavPanel();
   closeDrawer();
 
   setTimeout(function() {
     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     target.classList.remove('jump-highlight');
-    // 強制リフローしてアニメーションを再トリガー
     void target.offsetWidth;
     target.classList.add('jump-highlight');
   }, 220);
@@ -2416,7 +2441,7 @@ modal.addEventListener('click', e => {
   if (e.target === modal) modal.classList.remove('active');
 });
 
-// ===== 「全部閉じる」ボタン：開いているアコーディオンを全て閉じる =====
+// ===== 「全部閉じる」ボタン =====
 const collapseAllBtn = document.getElementById('collapseAllBtn');
 if (collapseAllBtn) {
   collapseAllBtn.addEventListener('click', function() {
@@ -2445,7 +2470,7 @@ if (favPanelOverlay) favPanelOverlay.addEventListener('click', closeFavPanel);
 if (favPanelCloseBtn) favPanelCloseBtn.addEventListener('click', closeFavPanel);
 
 // ===== 左上ハンバーガー：目次ドロワーの開閉とジャンプ =====
-let closeDrawer = function() {}; // フォールバック（後で上書き）
+let closeDrawer = function() {};
 (function() {
   const hamburgerBtn = document.getElementById('hamburgerBtn');
   const drawerPanel = document.getElementById('drawerPanel');
@@ -2454,7 +2479,6 @@ let closeDrawer = function() {}; // フォールバック（後で上書き）
   const drawerTocList = document.getElementById('drawerTocList');
   const drawerTopLink = document.getElementById('drawerTopLink');
 
-  // カテゴリ一覧をmenu-categoryのsummaryから自動生成
   document.querySelectorAll('details.menu-category').forEach(function(cat) {
     const summary = cat.querySelector('summary');
     if (!summary) return;
@@ -2514,8 +2538,6 @@ let closeDrawer = function() {}; // フォールバック（後で上書き）
       .replace(/\s+/g, '');
   }
 
-  // 漢字表記 → 読み（ひらがな）の対応表。該当する語が商品名に含まれていたら
-  // 読みも検索対象テキストに追加し、「味噌」でも「みそ」でも一致するようにする
   const READINGS = [
     ['味噌', 'みそ'], ['豚肉', 'ぶたにく'], ['豚', 'ぶた'], ['鶏肉', 'とりにく'],
     ['鶏', 'とり'], ['野菜', 'やさい'], ['辛子', 'からし'], ['辛', 'から'],
@@ -2541,7 +2563,6 @@ let closeDrawer = function() {}; // フォールバック（後で上書き）
     return norm + extra;
   }
 
-  // 元の位置（親要素）を記憶しておき、解除時に完全に元通り戻せるようにする
   const itemData = allItems.map(function(item) {
     const h3 = item.querySelector('h3');
     const nameText = h3 ? h3.textContent : '';
@@ -2606,85 +2627,6 @@ let closeDrawer = function() {}; // フォールバック（後で上書き）
     input.focus();
   });
 })();
-</script>
-<script>
-// ===== お知らせ（Googleスプレッドシート連携） =====
-// スプレッドシート「ファイル→共有→ウェブに公開」で発行したCSVリンクをここに入れる
-// 想定フォーマット：A列に、表示したいお知らせを1行につき1件ずつ入力（見出し行は不要）。
-// 全て空欄／URL未設定の場合は「お知らせ」欄自体を表示しない。
-const ANNOUNCEMENT_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTGjrgxeSZNGFPi0_KXFHoiyXrp2Od8kc5wdX8RMQGmeo80sheBGbbpGTSHAJ2qwpPhy8ms53lKd-HC/pub?gid=0&single=true&output=csv';
-
-// CSVの1行から先頭列（A列）だけを取り出す（ダブルクォートで囲まれた項目にも対応）
-function parseCsvFirstField(line) {
-  if (line.charAt(0) === '"') {
-    let i = 1;
-    let result = '';
-    while (i < line.length) {
-      if (line.charAt(i) === '"') {
-        if (line.charAt(i + 1) === '"') { result += '"'; i += 2; continue; }
-        break;
-      }
-      result += line.charAt(i);
-      i++;
-    }
-    return result;
-  }
-  const idx = line.indexOf(',');
-  return idx === -1 ? line : line.slice(0, idx);
-}
-
-async function fetchAnnouncementsFromSheet() {
-  if (!ANNOUNCEMENT_SHEET_CSV_URL) return [];
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(function() { controller.abort(); }, 4000);
-    const res = await fetch(ANNOUNCEMENT_SHEET_CSV_URL + '&_ts=' + Date.now(), { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (!res.ok) throw new Error('sheet fetch failed: ' + res.status);
-    const text = await res.text();
-    const lines = text.split(/\r?\n/);
-    const messages = [];
-    lines.forEach(function(line) {
-      if (!line) return;
-      const raw = parseCsvFirstField(line).trim();
-      if (raw) messages.push(raw);
-    });
-    return messages;
-  } catch (e) {
-    console.warn('お知らせスプレッドシートの取得に失敗しました。', e);
-    return [];
-  }
-}
-
-function escapeAnnouncementText(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function renderAnnouncements(messages) {
-  const section = document.getElementById('announcementSection');
-  const items = document.getElementById('announcementItems');
-  if (!section || !items) return;
-
-  if (!messages || messages.length === 0) {
-    section.classList.remove('active');
-    items.innerHTML = '';
-    return;
-  }
-
-  items.innerHTML = messages.map(function(msg) {
-    return '<p class="announcement-item">' + escapeAnnouncementText(msg) + '</p>';
-  }).join('');
-  section.classList.add('active');
-}
-
-async function initAnnouncements() {
-  const messages = await fetchAnnouncementsFromSheet();
-  renderAnnouncements(messages);
-}
-
-initAnnouncements();
 </script>
 </body>
 </html>
