@@ -2638,55 +2638,68 @@ let closeDrawer = function() {}; // フォールバック（後で上書き）
 })();
 </script>
 <script>
-// ===== お知らせ（Googleスプレッドシート連携） =====
-// スプレッドシート「ファイル→共有→ウェブに公開」で発行したCSVリンクをここに入れる
-// 想定フォーマット：A列に、表示したいお知らせを1行につき1件ずつ入力（見出し行は不要）。
-// 全て空欄／URL未設定の場合は「お知らせ」欄自体を表示しない。
+// ===== お知らせ（Googleスプレッドシート連携｜表示先振り分け対応） =====
 const ANNOUNCEMENT_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTGjrgxeSZNGFPi0_KXFHoiyXrp2Od8kc5wdX8RMQGmeo80sheBGbbpGTSHAJ2qwpPhy8ms53lKd-HC/pub?gid=0&single=true&output=csv';
 
-// CSVの1行から先頭列（A列）だけを取り出す（ダブルクォートで囲まれた項目にも対応）
-function parseCsvFirstField(line) {
-  if (line.charAt(0) === '"') {
-    let i = 1;
-    let result = '';
-    while (i < line.length) {
-      if (line.charAt(i) === '"') {
-        if (line.charAt(i + 1) === '"') { result += '"'; i += 2; continue; }
-        break;
+// CSV行を正しく分解（カンマ・ダブルクォート対応）
+function parseCsvLine(line) {
+  const fields = [];
+  let current = '';
+  let inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQuote && line[i+1] === '"') {
+        current += '"'; i++;
+      } else {
+        inQuote = !inQuote;
       }
-      result += line.charAt(i);
-      i++;
+    } else if (c === ',' && !inQuote) {
+      fields.push(current.trim().replace(/^"|"$/g, ''));
+      current = '';
+    } else {
+      current += c;
     }
-    return result;
   }
-  const idx = line.indexOf(',');
-  return idx === -1 ? line : line.slice(0, idx);
+  fields.push(current.trim().replace(/^"|"$/g, ''));
+  return fields;
 }
 
 async function fetchAnnouncementsFromSheet() {
   if (!ANNOUNCEMENT_SHEET_CSV_URL) return [];
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(function() { controller.abort(); }, 4000);
-    const res = await fetch(ANNOUNCEMENT_SHEET_CSV_URL + '&_ts=' + Date.now(), { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (!res.ok) throw new Error('sheet fetch failed: ' + res.status);
+    const res = await fetch(ANNOUNCEMENT_SHEET_CSV_URL + '&_ts=' + Date.now());
+    if (!res.ok) throw new Error('fetch failed');
     const text = await res.text();
-    const lines = text.split(/\r?\n/);
-    const messages = [];
-    lines.forEach(function(line) {
-      if (!line) return;
-      const raw = parseCsvFirstField(line).trim();
-      if (raw) messages.push(raw);
+    const lines = text.split(/\r?\n/).filter(line => line.trim());
+    if (lines.length <= 1) return []; // 見出しだけの場合空に
+
+    // 1行目：見出し、2行目以降をデータとして取得
+    const rows = lines.slice(1).map(parseCsvLine).filter(row => row[0]);
+
+    // ★ 表示先が「メニュー」「両方」または空欄のものだけ抽出
+    const filtered = rows.filter(row => {
+      const dest = (row[3] || '').trim();
+      return dest === '' || dest === 'メニュー' || dest === '両方';
     });
-    return messages;
+
+    // 新しい順に並べ替え（日付で降順）
+    filtered.sort((a, b) => (b[0] || '').localeCompare(a[0] || ''));
+
+    return filtered.map(row => {
+      const date = row[0] || '';
+      const title = row[1] || '';
+      const desc = row[2] || '';
+      return (date ? `📅 ${date} ` : '') + (title ? `【${title}】` : '') + (desc ? ` ${desc}` : '');
+    });
+
   } catch (e) {
-    console.warn('お知らせスプレッドシートの取得に失敗しました。', e);
+    console.warn('お知らせ取得エラー:', e);
     return [];
   }
 }
 
-function escapeAnnouncementText(str) {
+function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
@@ -2703,9 +2716,9 @@ function renderAnnouncements(messages) {
     return;
   }
 
-  items.innerHTML = messages.map(function(msg) {
-    return '<p class="announcement-item">' + escapeAnnouncementText(msg) + '</p>';
-  }).join('');
+  items.innerHTML = messages.map(msg =>
+    `<p class="announcement-item">${escapeHtml(msg)}</p>`
+  ).join('');
   section.classList.add('active');
 }
 
