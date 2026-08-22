@@ -5,6 +5,29 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>中華 つけ麺 はるき｜横浜のつけ麺・中華料理店</title>
 <meta name="description" content="横浜にある中華つけ麺はるき。豚骨魚介つけ麺、トマトカレーつけ麺、味噌つけ麺など全125品を提供する中華料理店です。">
+
+<!-- ファビコン -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+<!-- OGP（LINEやX、Facebookなどでシェアした時の表示） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="中華 つけ麺 はるき">
+<meta property="og:title" content="中華 つけ麺 はるき｜横浜のつけ麺・中華料理店">
+<meta property="og:description" content="横浜にある中華つけ麺はるき。豚骨魚介つけ麺、トマトカレーつけ麺、味噌つけ麺など全125品を提供する中華料理店です。">
+<meta property="og:image" content="images/ogp.jpg">
+<meta property="og:url" content="https://chuka-tsukemen-haruki.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="中華 つけ麺 はるき｜横浜のつけ麺・中華料理店">
+<meta name="twitter:description" content="横浜にある中華つけ麺はるき。豚骨魚介つけ麺、トマトカレーつけ麺、味噌つけ麺など全125品を提供する中華料理店です。">
+<meta name="twitter:image" content="images/ogp.jpg">
+
+<!-- PWA（ホーム画面に追加） -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8b4513">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="はるき">
 <style>
         * {
             margin: 0;
@@ -167,6 +190,64 @@
             padding: 8px 10px;
             border-radius: 4px;
             margin-bottom: 14px;
+        }
+
+        /* ===== 今月のおすすめ・季節限定 ===== */
+        .seasonal-section {
+            display: none;
+        }
+        .seasonal-section.active {
+            display: block;
+        }
+        .seasonal-box {
+            position: relative;
+            background: #fff;
+            border: 2px solid #e63946;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(230,57,70,0.2);
+        }
+        .seasonal-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 2;
+            background: #e63946;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .seasonal-photo {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #f8f5f2;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.9rem;
+        }
+        .seasonal-info {
+            padding: 16px 18px;
+        }
+        .seasonal-info h3 {
+            font-size: 1.15rem;
+            color: #8b4513;
+            margin-bottom: 4px;
+        }
+        .seasonal-info .price {
+            color: #c0392b;
+            font-weight: bold;
+        }
+        .seasonal-info .desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 6px;
         }
 
         /* ===== お店紹介 ===== */
@@ -335,7 +416,7 @@
 <header id="top">
 <h1>中華 つけ麺 はるき</h1>
 <div class="store-info">
-<span class="store-hours">🕒 営業時間：11:00〜15:00 / 17:00〜25:00</span>
+<span class="store-hours">🕒 11:00〜15:00 / 17:00〜翌1:00（水曜定休）</span>
 <a class="store-info-item tel-link" href="tel:0457133558">
 <span>📞 045-713-3558</span>
 <span class="tel-caption">タップで電話がかかります</span>
@@ -353,7 +434,7 @@
 <p class="sub">【ここにお店の一言紹介を入力（例：濃厚な自家製スープで勝負する、中華つけ麺専門店）】</p>
 </div>
 <div class="cta-row">
-<a class="cta-btn primary" href="menu.html">メニューをすべて見る</a>
+<a class="cta-btn primary" href="https://chuka-tsukemen-haruki.github.io/haruki-menu/" target="_blank" rel="noopener">メニューをすべて見る</a>
 <a class="cta-btn secondary" href="tel:0457133558">電話で予約する</a>
 </div>
 
@@ -366,6 +447,20 @@
 <div class="announcement-items" id="announcementItems"></div>
 </div>
 </div>
+
+<!-- ===== 今月のおすすめ・季節限定（スプレッドシート連動｜データが無い時は非表示） ===== -->
+<section id="seasonal" class="seasonal-section">
+<div class="section-title">🍜 今月のおすすめ・季節限定</div>
+<div class="seasonal-box">
+<span class="seasonal-badge" id="seasonalBadge">季節限定</span>
+<div class="seasonal-photo" id="seasonalPhoto">写真挿入</div>
+<div class="seasonal-info">
+<h3 id="seasonalName"></h3>
+<p class="price" id="seasonalPrice"></p>
+<p class="desc" id="seasonalDesc"></p>
+</div>
+</div>
+</section>
 
 <!-- ===== お店紹介 ===== -->
 <section id="about">
@@ -423,27 +518,27 @@
 </div>
 </div>
 </div>
-<a class="menu-all-link cta-btn primary" href="menu.html" style="display:inline-block; margin: 18px auto 0;">全125品のメニューを見る</a>
+<a class="menu-all-link cta-btn primary" href="https://chuka-tsukemen-haruki.github.io/haruki-menu/" target="_blank" rel="noopener" style="display:inline-block; margin: 18px auto 0;">全125品のメニューを見る</a>
 </section>
 
 <!-- ===== アクセス ===== -->
 <section id="access">
 <div class="section-title">アクセス</div>
 <div class="access-box">
-<div class="access-row"><span class="label">住所</span><span>【ここに住所を入力】</span></div>
-<div class="access-row"><span class="label">営業時間</span><span>11:00〜15:00 / 17:00〜25:00</span></div>
-<div class="access-row"><span class="label">定休日</span><span>【ここに定休日を入力】</span></div>
+<div class="access-row"><span class="label">住所</span><span>神奈川県横浜市南区宮元町2-31-4 春江ビル1F</span></div>
+<div class="access-row"><span class="label">営業時間</span><span>11:00〜15:00 / 17:00〜翌1:00</span></div>
+<div class="access-row"><span class="label">定休日</span><span>水曜日</span></div>
 <div class="access-row"><span class="label">電話番号</span><span><a href="tel:0457133558">045-713-3558</a></span></div>
 <div class="access-row"><span class="label">最寄り駅</span><span>【ここに最寄り駅・駐車場情報を入力】</span></div>
 </div>
-<div class="map-embed">Googleマップ埋め込み予定<br>（住所確定後、iframeに差し替え）</div>
+<div class="map-embed">Googleマップ埋め込み予定<br>（iframeに差し替え）</div>
 </section>
 
 </div>
 
 <footer>
 <div class="footer-store">中華 つけ麺 はるき</div>
-<div>【ここに住所を入力】｜045-713-3558</div>
+<div>神奈川県横浜市南区宮元町2-31-4 春江ビル1F｜045-713-3558</div>
 <div class="footer-copy">&copy; 中華つけ麺はるき</div>
 </footer>
 
@@ -532,6 +627,57 @@ function renderAnnouncements(messages) {
   const messages = await fetchAnnouncementsFromSheet();
   renderAnnouncements(messages);
 })();
+</script>
+
+<script>
+// ===== 今月のおすすめ・季節限定（スプレッドシート連動｜表示列に何か入っている先頭行だけを表示） =====
+// CSV公開リンクを発行したら、下のURLをそのまま差し替えてください
+const SEASONAL_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vStYVHYEzmxrEQPKXDuLMqdKpBFD0pjeSfJWkMzkGXMtOvvyP5dh_hnJ2npAo810pAepEdrS3Wh7FuG/pub?output=csv';
+// 列の並び：A=表示 / B=商品名 / C=価格 / D=説明 / E=画像ファイル名 / F=バッジ文言
+
+async function initSeasonal() {
+  const section = document.getElementById('seasonal');
+  if (!SEASONAL_CSV_URL) return; // リンク未設定の間は何もしない（非表示のまま）
+  try {
+    const res = await fetch(SEASONAL_CSV_URL + '&_ts=' + Date.now());
+    if (!res.ok) throw new Error('fetch failed');
+    const text = await res.text();
+    const lines = text.split(/\r?\n/).filter(function(l) { return l.trim(); });
+    if (lines.length <= 1) { section.classList.remove('active'); return; }
+
+    const rows = lines.slice(1).map(parseCsvLine);
+    const active = rows.find(function(r) { return (r[0] || '').trim() !== ''; });
+
+    if (!active) {
+      section.classList.remove('active'); // 表示列が全部空欄＝掲載終了
+      return;
+    }
+
+    const name = (active[1] || '').trim();
+    const price = (active[2] || '').trim();
+    const desc = (active[3] || '').trim();
+    const imgFile = (active[4] || '').trim();
+    const badge = (active[5] || '').trim() || '季節限定';
+
+    document.getElementById('seasonalBadge').textContent = badge;
+    document.getElementById('seasonalName').textContent = name;
+    document.getElementById('seasonalPrice').textContent = price;
+    document.getElementById('seasonalDesc').textContent = desc;
+
+    const photoEl = document.getElementById('seasonalPhoto');
+    if (imgFile) {
+      photoEl.dataset.img = 'images/' + imgFile;
+      loadOsusumePhoto(photoEl);
+    }
+
+    section.classList.add('active');
+  } catch (e) {
+    console.warn('季節限定メニューの取得に失敗しました', e);
+    section.classList.remove('active');
+  }
+}
+
+initSeasonal();
 </script>
 
 <script>
@@ -688,7 +834,6 @@ function renderOsusumeItems(items) {
              '<div class="osusume-info">' +
                '<h3>' + escapeHtml(item.name) + '</h3>' +
                '<p class="price">' + escapeHtml(item.price) + '</p>' +
-               '<p class="desc">【ここに一言説明を入力】</p>' +
              '</div>' +
            '</div>';
   }).join('');
@@ -727,6 +872,17 @@ async function initOsusumeRanking() {
 }
 
 initOsusumeRanking();
+</script>
+
+<script>
+// ===== PWA：Service Workerの登録（対応ブラウザのみ・失敗しても通常表示に影響なし） =====
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').catch(function(err) {
+      console.warn('Service Workerの登録に失敗しました', err);
+    });
+  });
+}
 </script>
 
 </body>
