@@ -187,7 +187,6 @@
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            overflow: hidden;
             scroll-margin-top: 15px;
         }
         details.menu-category summary {
@@ -199,6 +198,20 @@
             font-weight: bold;
             padding: 14px 16px;
             border-left: 5px solid #d2691e;
+            details.menu-category summary {
+    list-style: none;
+    cursor: pointer;
+    background: #fef3e8;
+    color: #8b4513;
+    font-size: 1.15rem;
+    font-weight: bold;
+    padding: 14px 16px;
+    border-left: 5px solid #d2691e;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -227,6 +240,7 @@
         }
         details.menu-category .category-body {
             padding: 16px;
+            border-radius: 0 0 8px 8px;
         }
 
         /* ===== 多重アコーディオン（サブカテゴリ） ===== */
