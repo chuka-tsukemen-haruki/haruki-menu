@@ -24,10 +24,13 @@
 
 <!-- PWA（ホーム画面に追加） -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#8b4513">
+<meta name="theme-color" content="#241812">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="はるき">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;800&display=swap" rel="stylesheet">
 <style>
         * {
             margin: 0;
@@ -36,8 +39,8 @@
             font-family: "Meiryo", "ヒラギノ角ゴ ProN", sans-serif;
         }
         body {
-            background-color: #fffdfa;
-            color: #333;
+            background-color: #f7f0dc;
+            color: #2a2013;
             line-height: 1.7;
             word-break: keep-all;
             overflow-wrap: break-word;
@@ -53,16 +56,19 @@
         header {
             text-align: center;
             padding: 25px 0;
-            border-bottom: 2px solid #d2691e;
+            border-bottom: 2px solid #a8291f;
             margin-bottom: 0;
         }
         h1 {
-            color: #8b4513;
-            font-size: 2rem;
+            color: #241812;
+            font-size: 2.1rem;
+            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
+            font-weight: 800;
+            letter-spacing: 0.06em;
         }
         .reservation-note {
             font-size: 0.85rem;
-            color: #a0522d;
+            color: #7c1e17;
             margin-top: 8px;
             font-weight: bold;
         }
@@ -77,7 +83,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: #6e3610;
+            color: #241812;
             font-weight: bold;
             font-size: 1rem;
         }
@@ -86,16 +92,16 @@
             flex-direction: column;
             align-items: center;
             gap: 2px;
-            background: #d2691e;
+            background: #a8291f;
             color: #fff;
-            border: 3px solid #b85715;
+            border: 3px solid #7c1e17;
             font-weight: bold;
             font-size: 1rem;
             padding: 8px 18px;
             border-radius: 24px;
             text-decoration: none;
             min-height: 44px;
-            box-shadow: 0 2px 6px rgba(210,105,30,0.35);
+            box-shadow: 0 2px 6px rgba(168,41,31,0.35);
             transition: transform 0.15s, background 0.15s;
         }
         a.store-info-item.tel-link .tel-caption {
@@ -106,7 +112,7 @@
         }
         a.store-info-item.tel-link:hover,
         a.store-info-item.tel-link:active {
-            background: #b85715;
+            background: #7c1e17;
             transform: scale(1.03);
         }
 
@@ -118,13 +124,13 @@
         .hero-photo {
             width: 100%;
             aspect-ratio: 16 / 9;
-            background-color: #f8f5f2;
+            background-color: #ede1c8;
             background-size: cover;
             background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #999;
+            color: #8a7c5e;
             font-size: 0.9rem;
             border-radius: 0 0 12px 12px;
         }
@@ -133,14 +139,16 @@
             padding: 24px 20px 8px;
         }
         .hero-copy .catch {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #8b4513;
+            font-size: 1.5rem;
+            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
+            font-weight: 800;
+            color: #241812;
             margin-bottom: 8px;
+            letter-spacing: 0.02em;
         }
         .hero-copy .sub {
             font-size: 0.95rem;
-            color: #555;
+            color: #4a3c28;
         }
         .cta-row {
             display: flex;
@@ -160,14 +168,67 @@
             line-height: 1.2;
         }
         .cta-btn.primary {
-            background: #d2691e;
+            background: #a8291f;
             color: #fff;
-            box-shadow: 0 2px 6px rgba(210,105,30,0.35);
+            box-shadow: 0 2px 6px rgba(168,41,31,0.35);
         }
         .cta-btn.secondary {
             background: #fff;
-            color: #8b4513;
-            border: 2px solid #d2691e;
+            color: #241812;
+            border: 2px solid #a8291f;
+        }
+        .menu-note {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #7c6f52;
+            margin: 10px auto 0;
+            max-width: 520px;
+        }
+
+        /* ===== クイックナビ（案内タイル） ===== */
+        .quicknav {
+            padding: 22px 0 6px;
+        }
+        .quicknav-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        @media (max-width: 600px) {
+            .quicknav-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
+        .quicknav-tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #241812;
+            color: #f7f0dc;
+            border-radius: 8px;
+            padding: 16px 8px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: background 0.15s, transform 0.15s;
+        }
+        .quicknav-tile:hover, .quicknav-tile:active {
+            background: #a8291f;
+            transform: translateY(-2px);
+        }
+        .quicknav-tile svg {
+            width: 26px;
+            height: 26px;
+            stroke: #e8c27a;
+            fill: none;
+            stroke-width: 1.6;
+        }
+        .quicknav-tile span {
+            font-size: 0.82rem;
+            font-weight: bold;
+            letter-spacing: 0.03em;
         }
 
         /* ===== 共通セクション ===== */
@@ -175,18 +236,20 @@
             padding: 10px 0 34px;
         }
         .section-title {
-            font-size: 1.3rem;
-            color: #8b4513;
-            font-weight: bold;
+            font-size: 1.35rem;
+            color: #241812;
+            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
+            font-weight: 800;
+            letter-spacing: 0.02em;
             margin-bottom: 16px;
             padding-left: 12px;
-            border-left: 5px solid #d2691e;
+            border-left: 5px solid #a8291f;
         }
         .placeholder-note {
             font-size: 0.78rem;
-            color: #b5a58e;
-            background: #fff8f0;
-            border: 1px dashed #e0c7a5;
+            color: #9c8760;
+            background: #f2e8d1;
+            border: 1px dashed #d3b676;
             padding: 8px 10px;
             border-radius: 4px;
             margin-bottom: 14px;
@@ -202,17 +265,17 @@
         .seasonal-box {
             position: relative;
             background: #fff;
-            border: 2px solid #e63946;
+            border: 2px solid #a8291f;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 3px 10px rgba(230,57,70,0.2);
+            box-shadow: 0 3px 10px rgba(168,41,31,0.2);
         }
         .seasonal-badge {
             position: absolute;
             top: 12px;
             left: 12px;
             z-index: 2;
-            background: #e63946;
+            background: #a8291f;
             color: #fff;
             font-size: 0.8rem;
             font-weight: bold;
@@ -223,54 +286,50 @@
         .seasonal-photo {
             width: 100%;
             aspect-ratio: 16 / 9;
-            background-color: #f8f5f2;
+            background-color: #ede1c8;
             background-size: cover;
             background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #999;
+            color: #8a7c5e;
             font-size: 0.9rem;
         }
         .seasonal-info {
             padding: 16px 18px;
         }
         .seasonal-info h3 {
-            font-size: 1.15rem;
-            color: #8b4513;
+            font-size: 1.2rem;
+            color: #241812;
+            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
+            font-weight: 800;
             margin-bottom: 4px;
         }
         .seasonal-info .price {
-            color: #c0392b;
+            color: #a8291f;
             font-weight: bold;
         }
         .seasonal-info .desc {
             font-size: 0.9rem;
-            color: #666;
+            color: #52422b;
             margin-top: 6px;
         }
 
         /* ===== お店紹介 ===== */
         .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
             margin-top: 16px;
         }
         .about-photo {
-            aspect-ratio: 4 / 3;
-            background-color: #f8f5f2;
+            aspect-ratio: 16 / 9;
+            background-color: #ede1c8;
             background-size: cover;
             background-position: center;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #999;
+            color: #8a7c5e;
             font-size: 0.85rem;
-        }
-        @media (max-width: 600px) {
-            .about-grid { grid-template-columns: 1fr; }
         }
 
         /* ===== おすすめメニュー（横スライド） ===== */
@@ -286,19 +345,20 @@
             -webkit-overflow-scrolling: touch;
             padding: 4px 4px 14px;
             scrollbar-width: thin;
-            scrollbar-color: #e0c7a5 transparent;
+            scrollbar-color: #d3b676 transparent;
         }
         .osusume-grid::-webkit-scrollbar {
             height: 6px;
         }
         .osusume-grid::-webkit-scrollbar-thumb {
-            background: #e0c7a5;
+            background: #d3b676;
             border-radius: 4px;
         }
         .osusume-item {
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background: #fffaf1;
+            border-radius: 4px;
+            border: 1px solid #e6d8b8;
+            box-shadow: none;
             overflow: hidden;
             flex: 0 0 auto;
             width: 220px;
@@ -310,13 +370,13 @@
         .osusume-photo {
             width: 100%;
             aspect-ratio: 4 / 3;
-            background-color: #f8f5f2;
+            background-color: #ede1c8;
             background-size: cover;
             background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #999;
+            color: #8a7c5e;
             font-size: 0.85rem;
         }
         .osusume-info {
@@ -324,44 +384,96 @@
         }
         .osusume-info h3 {
             font-size: 1.05rem;
+            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
+            font-weight: 500;
             margin-bottom: 4px;
         }
         .osusume-info .price {
-            color: #c0392b;
+            color: #a8291f;
             font-weight: bold;
         }
         .osusume-info .desc {
             font-size: 0.85rem;
-            color: #666;
+            color: #52422b;
             margin-top: 4px;
         }
-        .osusume-nav {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 4px;
+        .osusume-accordion {
+            background: #fffaf1;
+            border: 1px solid #e6d8b8;
+            border-radius: 6px;
+            overflow: hidden;
         }
-        .osusume-nav-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 1px solid #e0c7a5;
-            background: #fff;
-            color: #8b4513;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .osusume-summary {
+            list-style: none;
             cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 0.02em;
+            color: #241812;
+            border-left: 5px solid #a8291f;
         }
-        .osusume-nav-btn:hover, .osusume-nav-btn:active {
-            background: #fef3e8;
+        .osusume-summary::-webkit-details-marker {
+            display: none;
         }
-        .osusume-hint {
-            text-align: center;
+        .osusume-summary::marker {
+            content: "";
+        }
+        .osusume-arrow {
             font-size: 0.75rem;
-            color: #b5a58e;
-            margin-top: 2px;
+            color: #a8291f;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        .osusume-accordion[open] .osusume-arrow {
+            transform: rotate(180deg);
+        }
+        .osusume-body {
+            padding: 16px;
+        }
+        .info-accordion {
+            background: #fffaf1;
+            border: 1px solid #e6d8b8;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .info-summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 0.02em;
+            color: #241812;
+            border-left: 5px solid #a8291f;
+        }
+        .info-summary::-webkit-details-marker {
+            display: none;
+        }
+        .info-summary::marker {
+            content: "";
+        }
+        .info-arrow {
+            font-size: 0.75rem;
+            color: #a8291f;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        .info-accordion[open] .info-arrow {
+            transform: rotate(180deg);
+        }
+        .info-body {
+            padding: 16px;
         }
         .menu-all-link {
             display: block;
@@ -377,23 +489,23 @@
             display: block;
         }
         .announcement-list {
-            background: linear-gradient(135deg, #fff3e0, #ffd8a8);
-            border: 4px solid #e63946;
+            background: linear-gradient(135deg, #f6e6bd, #e8c27a);
+            border: 4px solid #a8291f;
             border-radius: 8px;
             padding: 18px 20px;
-            box-shadow: 0 3px 10px rgba(230,57,70,0.25);
+            box-shadow: 0 3px 10px rgba(168,41,31,0.25);
         }
         .announcement-title {
             font-size: 1.1rem;
             font-weight: 800;
-            color: #c0392b;
+            color: #a8291f;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             margin-bottom: 12px;
         }
         .announcement-item {
-            color: #6e3610;
+            color: #241812;
             font-size: 1.05rem;
             font-weight: 700;
             line-height: 1.8;
@@ -402,12 +514,12 @@
         .announcement-item + .announcement-item {
             margin-top: 10px;
             padding-top: 10px;
-            border-top: 1px dashed #c0392b;
+            border-top: 1px dashed #a8291f;
         }
 
         /* ===== アクセス ===== */
         .access-box {
-            background: #fff8f0;
+            background: #f2e8d1;
             border-radius: 8px;
             padding: 18px 20px;
         }
@@ -416,24 +528,32 @@
             gap: 10px;
             padding: 6px 0;
             font-size: 0.95rem;
-            border-bottom: 1px solid #f0e0d0;
+            border-bottom: 1px solid #e2cfa0;
         }
         .access-row:last-child { border-bottom: none; }
         .access-row .label {
             width: 90px;
             flex-shrink: 0;
-            color: #8b4513;
+            color: #241812;
             font-weight: bold;
+        }
+        .access-row > span:not(.label) {
+            flex: 1;
+            min-width: 0;
+            overflow-wrap: break-word;
         }
         .access-row .station-list {
             display: flex;
             flex-direction: column;
             gap: 4px;
+            flex: 1;
+            min-width: 0;
+            overflow-wrap: break-word;
         }
         .map-embed {
             margin-top: 16px;
             aspect-ratio: 16 / 9;
-            background: #f0ece5;
+            background: #ede1c8;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -448,10 +568,10 @@
         footer {
             text-align: center;
             padding: 30px 20px 40px;
-            background: #fef3e8;
+            background: #f1e2c0;
             margin-top: 10px;
             font-size: 0.85rem;
-            color: #8b4513;
+            color: #241812;
         }
         footer .footer-store {
             font-weight: bold;
@@ -459,7 +579,7 @@
         }
         footer .footer-copy {
             margin-top: 10px;
-            color: #b98a5e;
+            color: #a9884f;
             font-size: 0.75rem;
         }
 </style>
@@ -487,11 +607,32 @@
 <p class="sub">【ここにお店の一言紹介を入力（例：濃厚な自家製スープで勝負する、中華つけ麺専門店）】</p>
 </div>
 <div class="cta-row">
-<a class="cta-btn primary" href="https://chuka-tsukemen-haruki.github.io/haruki-menu/menu.html" target="_blank" rel="noopener">メニューをすべて見る</a>
+<a class="cta-btn primary" href="https://chuka-tsukemen-haruki.github.io/haruki-menu/menu.html" target="_blank" rel="noopener">グランドメニューを見る</a>
 <a class="cta-btn secondary" href="tel:0457133558">電話で予約する</a>
 </div>
+<p class="menu-note wrap">※上記は125品のグランドメニューです。期間限定メニューや、店内のホワイトボードでご案内中のメニューは含まれていません。詳しくは店頭にてご確認ください。</p>
 
 <div class="wrap">
+<div class="quicknav">
+<div class="quicknav-grid">
+<button class="quicknav-tile" type="button" data-jump="about">
+<svg viewBox="0 0 24 24"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-6h4v6"/></svg>
+<span>お店について</span>
+</button>
+<button class="quicknav-tile" type="button" data-jump="osusume">
+<svg viewBox="0 0 24 24"><path d="M4 11a8 8 0 0 1 16 0"/><path d="M3 11h18l-1.5 8a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5L3 11Z"/><path d="M9 11a3 3 0 0 1 6 0"/></svg>
+<span>おすすめメニュー</span>
+</button>
+<button class="quicknav-tile" type="button" data-jump="access">
+<svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg>
+<span>アクセス</span>
+</button>
+<a class="quicknav-tile" href="https://chuka-tsukemen-haruki.github.io/haruki-menu/menu.html" target="_blank" rel="noopener">
+<svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M4 5.5v16"/><path d="M8 8h8M8 12h8"/></svg>
+<span>全メニュー</span>
+</a>
+</div>
+</div>
 
 <!-- ===== お知らせ ===== -->
 <div class="announcement-section" id="announcementSection">
@@ -517,18 +658,23 @@
 
 <!-- ===== お店紹介 ===== -->
 <section id="about">
-<div class="section-title">お店について</div>
+<details class="info-accordion">
+<summary class="info-summary">お店について<span class="info-arrow">▼</span></summary>
+<div class="info-body">
 <div class="placeholder-note">仮テキストです。お店のこだわりや歴史などに差し替えてください。</div>
 <p>【ここにお店の紹介文を入力。例：素材へのこだわり、スープや麺の特徴、お店の雰囲気、営業してきた年数など】</p>
 <div class="about-grid">
 <div class="about-photo" data-img="images/about-1.jpg">写真挿入（店内）</div>
-<div class="about-photo" data-img="images/about-2.jpg">写真挿入（調理風景）</div>
 </div>
+</div>
+</details>
 </section>
 
-<!-- ===== おすすめメニュー（横スライド） ===== -->
+<!-- ===== おすすめメニュー（横スライド・開閉式） ===== -->
 <section id="osusume">
-<div class="section-title">おすすめメニュー</div>
+<details class="osusume-accordion">
+<summary class="osusume-summary">おすすめメニュー<span class="osusume-arrow">▼</span></summary>
+<div class="osusume-body">
 <div class="osusume-scroll-outer">
 <div class="osusume-grid" id="osusumeGrid">
 <div class="osusume-item">
@@ -572,18 +718,18 @@
 </div>
 </div>
 </div>
-<div class="osusume-nav">
-<button class="osusume-nav-btn" id="osusumePrevBtn" type="button" aria-label="前へ">◀</button>
-<button class="osusume-nav-btn" id="osusumeNextBtn" type="button" aria-label="次へ">▶</button>
 </div>
-<p class="osusume-hint">← 横にスライドできます →</p>
+<a class="menu-all-link cta-btn primary" href="https://chuka-tsukemen-haruki.github.io/haruki-menu/menu.html" target="_blank" rel="noopener" style="display:inline-block; margin: 18px auto 0;">グランドメニュー125品を見る</a>
+<p class="menu-note">※期間限定メニューや店内ホワイトボードのメニューは含まれていません</p>
 </div>
-<a class="menu-all-link cta-btn primary" href="https://chuka-tsukemen-haruki.github.io/haruki-menu/menu.html" target="_blank" rel="noopener" style="display:inline-block; margin: 18px auto 0;">全125品のメニューを見る</a>
+</details>
 </section>
 
 <!-- ===== アクセス ===== -->
 <section id="access">
-<div class="section-title">アクセス</div>
+<details class="info-accordion">
+<summary class="info-summary">アクセス<span class="info-arrow">▼</span></summary>
+<div class="info-body">
 <div class="access-box">
 <div class="access-row"><span class="label">住所</span><span>神奈川県横浜市南区宮元町2-31-4 春江ビル1F</span></div>
 <div class="access-row"><span class="label">営業時間</span><span>11:00〜15:00 / 17:00〜翌1:00</span></div>
@@ -606,6 +752,8 @@
   allowfullscreen>
 </iframe>
 </div>
+</div>
+</details>
 </section>
 
 </div>
@@ -945,26 +1093,20 @@ async function initOsusumeRanking() {
   }
 }
 
-initOsusumeRanking();
-</script>
+initOsusumeRanking();</script>
 
 <script>
-// ===== おすすめメニュー：横スライド用の矢印ボタン =====
+// ===== クイックナビ：タップ先のセクションを開いてスクロール =====
 (function() {
-  const grid = document.getElementById('osusumeGrid');
-  const prevBtn = document.getElementById('osusumePrevBtn');
-  const nextBtn = document.getElementById('osusumeNextBtn');
-  if (!grid || !prevBtn || !nextBtn) return;
-
-  function scrollByCard(direction) {
-    const card = grid.querySelector('.osusume-item');
-    const gap = 15;
-    const cardWidth = card ? card.getBoundingClientRect().width + gap : 220;
-    grid.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
-  }
-
-  prevBtn.addEventListener('click', function() { scrollByCard(-1); });
-  nextBtn.addEventListener('click', function() { scrollByCard(1); });
+  document.querySelectorAll('.quicknav-tile[data-jump]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const target = document.getElementById(btn.dataset.jump);
+      if (!target) return;
+      const details = target.querySelector('details.info-accordion, details.osusume-accordion');
+      if (details) details.setAttribute('open', '');
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
 })();
 </script>
 
