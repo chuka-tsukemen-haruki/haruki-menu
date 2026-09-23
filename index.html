@@ -332,6 +332,55 @@
             font-size: 0.85rem;
         }
 
+        /* ===== デリバリー・お持ち帰り ===== */
+        .delivery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+        }
+        @media (max-width: 600px) {
+            .delivery-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .delivery-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #fffaf1;
+            border: 1px solid #e6d8b8;
+            border-radius: 8px;
+            padding: 16px 8px;
+            min-height: 44px;
+            text-decoration: none;
+            color: #241812;
+            font-weight: bold;
+            font-size: 0.92rem;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .delivery-item:hover, .delivery-item:active {
+            transform: translateY(-2px);
+            border-color: #a8291f;
+            color: #a8291f;
+        }
+        .takeout-box {
+            margin-top: 20px;
+            background: #f2e8d1;
+            border-radius: 8px;
+            padding: 16px 18px;
+        }
+        .takeout-box h3 {
+            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
+            color: #241812;
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .takeout-box p {
+            font-size: 0.92rem;
+            color: #52422b;
+        }
+
         /* ===== おすすめメニュー（横スライド） ===== */
         .osusume-scroll-outer {
             position: relative;
@@ -610,7 +659,6 @@
 <a class="cta-btn primary" href="https://chuka-tsukemen-haruki.github.io/haruki-menu/menu.html" target="_blank" rel="noopener">グランドメニューを見る</a>
 <a class="cta-btn secondary" href="tel:0457133558">電話で予約する</a>
 </div>
-<p class="menu-note wrap">※上記は125品のグランドメニューです。期間限定メニューや、店内のホワイトボードでご案内中のメニューは含まれていません。詳しくは店頭にてご確認ください。</p>
 
 <div class="wrap">
 <div class="quicknav">
@@ -622,6 +670,14 @@
 <button class="quicknav-tile" type="button" data-jump="osusume">
 <svg viewBox="0 0 24 24"><path d="M4 11a8 8 0 0 1 16 0"/><path d="M3 11h18l-1.5 8a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5L3 11Z"/><path d="M9 11a3 3 0 0 1 6 0"/></svg>
 <span>おすすめメニュー</span>
+</button>
+<button class="quicknav-tile" type="button" data-jump="delivery">
+<svg viewBox="0 0 24 24"><rect x="3" y="9" width="11" height="9" rx="1"/><path d="M14 12h3l4 3v3h-7"/><circle cx="7.5" cy="19.5" r="1.6"/><circle cx="17.5" cy="19.5" r="1.6"/></svg>
+<span>デリバリー・お持ち帰り</span>
+</button>
+<button class="quicknav-tile" type="button" data-jump="private-room">
+<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 13h16"/><path d="M9 4v9"/></svg>
+<span>2階貸切</span>
 </button>
 <button class="quicknav-tile" type="button" data-jump="access">
 <svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg>
@@ -665,6 +721,27 @@
 <p>【ここにお店の紹介文を入力。例：素材へのこだわり、スープや麺の特徴、お店の雰囲気、営業してきた年数など】</p>
 <div class="about-grid">
 <div class="about-photo" data-img="images/about-1.jpg">写真挿入（店内）</div>
+</div>
+</div>
+</details>
+</section>
+
+<!-- ===== デリバリー・お持ち帰り ===== -->
+<section id="delivery">
+<details class="info-accordion">
+<summary class="info-summary">デリバリー・お持ち帰り<span class="info-arrow">▼</span></summary>
+<div class="info-body">
+<div class="placeholder-note">仮のリンクです。各デリバリーサービスの実際の店舗ページURLに差し替えてください。</div>
+<p>下記の宅配サービスからもご注文いただけます。</p>
+<div class="delivery-grid">
+<a class="delivery-item" href="#" target="_blank" rel="noopener">出前館</a>
+<a class="delivery-item" href="#" target="_blank" rel="noopener">Uber Eats</a>
+<a class="delivery-item" href="#" target="_blank" rel="noopener">menu</a>
+<a class="delivery-item" href="#" target="_blank" rel="noopener">Rocket Now</a>
+</div>
+<div class="takeout-box">
+<h3>お持ち帰りについて</h3>
+<p>【ここにお持ち帰り可否・受け取り方法・事前予約の要否などを入力】</p>
 </div>
 </div>
 </details>
@@ -720,7 +797,6 @@
 </div>
 </div>
 <a class="menu-all-link cta-btn primary" href="https://chuka-tsukemen-haruki.github.io/haruki-menu/menu.html" target="_blank" rel="noopener" style="display:inline-block; margin: 18px auto 0;">グランドメニュー125品を見る</a>
-<p class="menu-note">※期間限定メニューや店内ホワイトボードのメニューは含まれていません</p>
 </div>
 </details>
 </section>
@@ -752,6 +828,17 @@
   allowfullscreen>
 </iframe>
 </div>
+</div>
+</details>
+</section>
+
+<!-- ===== 2階貸切のご案内 ===== -->
+<section id="private-room">
+<details class="info-accordion">
+<summary class="info-summary">2階貸切のご案内<span class="info-arrow">▼</span></summary>
+<div class="info-body">
+<div class="placeholder-note">仮テキストです。貸切可能人数・料金・利用条件・予約方法などに差し替えてください。</div>
+<p>【ここに2階貸切について入力。例：最大◯名様まで対応、宴会・歓送迎会・貸切パーティーなどに利用可能、ご予約はお電話にて承ります】</p>
 </div>
 </details>
 </section>
