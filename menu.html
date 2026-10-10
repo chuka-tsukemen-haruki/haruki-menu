@@ -54,6 +54,7 @@ details.info-category .info-body{padding:14px;background:#fffaf1}
 .tokusei-note{color:#7c1e17;font-size:.78rem;font-weight:600}
 .menu-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
 .nested-list{display:flex;flex-direction:column;gap:10px}
+.season-empty{color:#9c8760;font-size:.9rem;text-align:center;padding:6px 0}
 details.menu-category{background:#fffaf1;border:1px solid #e6d8b8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.1);scroll-margin-top:15px}
 details.menu-category details.menu-category{box-shadow:none}
 details.menu-category summary{list-style:none;cursor:pointer;background:transparent;color:#241812;font-size:1.2rem;font-family:"Shippori Mincho","ヒラギノ明朝 ProN",serif;font-weight:800;letter-spacing:.02em;padding:14px 16px;border-left:5px solid #a8291f;display:flex;justify-content:space-between;align-items:center}
@@ -180,18 +181,6 @@ details.menu-category summary{font-size:1rem;padding:12px}
 
 <main>
 <div class="menu-list">
-<details class="menu-category" id="section-seasonal" style="display:none">
-<summary>期間限定メニュー<span class="cat-count">0品</span></summary>
-<div class="category-body">
-<div class="subcats">
-<details class="sub-category" data-season="春" style="display:none"><summary>春<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
-<details class="sub-category" data-season="夏" style="display:none"><summary>夏<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
-<details class="sub-category" data-season="秋" style="display:none"><summary>秋<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
-<details class="sub-category" data-season="冬" style="display:none"><summary>冬<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
-<details class="sub-category" data-season="その他" style="display:none"><summary>その他<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
-</div>
-</div>
-</details>
 <details class="menu-category" id="section-grand">
 <summary>グランドメニュー<span class="cat-count">124品</span></summary>
 <div class="category-body">
@@ -1558,6 +1547,18 @@ details.menu-category summary{font-size:1rem;padding:12px}
 </div>
 </div>
 </details>
+<details class="menu-category" id="section-seasonal">
+<summary>限定メニュー<span class="cat-count">0品</span></summary>
+<div class="category-body">
+<div class="subcats">
+<details class="sub-category" data-season="春"><summary>春<span class="sub-count">0品</span></summary><div class="menu-grid"><p class="season-empty">現在ご用意はありません</p></div></details>
+<details class="sub-category" data-season="夏"><summary>夏<span class="sub-count">0品</span></summary><div class="menu-grid"><p class="season-empty">現在ご用意はありません</p></div></details>
+<details class="sub-category" data-season="秋"><summary>秋<span class="sub-count">0品</span></summary><div class="menu-grid"><p class="season-empty">現在ご用意はありません</p></div></details>
+<details class="sub-category" data-season="冬"><summary>冬<span class="sub-count">0品</span></summary><div class="menu-grid"><p class="season-empty">現在ご用意はありません</p></div></details>
+<details class="sub-category" data-season="その他" style="display:none"><summary>その他<span class="sub-count">0品</span></summary><div class="menu-grid"><p class="season-empty">現在ご用意はありません</p></div></details>
+</div>
+</div>
+</details>
 </div>
 </main>
 <button aria-label="開いているアコーディオンを全部閉じる" class="collapse-fab" id="collapseAllBtn" type="button">
@@ -1939,45 +1940,47 @@ function renderAnnouncements(messages){
 (async function(){renderAnnouncements(await fetchAnnouncementsFromSheet());})();
 </script>
 <script>
-// ===== 期間限定メニュー（Googleスプレッドシート連携）=====
-// 列: A=表示(○) / B=季節(春夏秋冬) / C=商品名 / D=価格 / E=説明 / F=画像
-const SEASONAL_CSV_URL='ここに「ウェブに公開」したCSVのURLを貼る';
+// ===== 限定メニュー（Googleスプレッドシート連携）=====
+// 1行目の見出し名で列を判別します（表示・季節・商品名・価格・画像は必須、説明は任意。列の順番は自由）
+const SEASONAL_CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vStYVHYEzmxrEQPKXDuLMqdKpBFD0pjeSfJWkMzkGXMtOvvyP5dh_hnJ2npAo810pAepEdrS3Wh7FuG/pub?gid=0&single=true&output=csv';
 
 (async function(){
   if(!SEASONAL_CSV_URL||SEASONAL_CSV_URL.indexOf('http')!==0)return;
 
   const section=document.getElementById('section-seasonal');
-  const tocLink=document.querySelector('.drawer-cat-link[href="#section-seasonal"]');
-  if(tocLink)tocLink.style.display='none';
 
   const SEASONS=['春','夏','秋','冬','その他'];
   const groups={};
   SEASONS.forEach(function(s){groups[s]=section.querySelector('details[data-season="'+s+'"]');});
 
   let rows=[];
+  let col={};
   try{
     const res=await fetch(SEASONAL_CSV_URL+(SEASONAL_CSV_URL.indexOf('?')>=0?'&':'?')+'_ts='+Date.now());
     if(!res.ok)throw new Error('fetch failed');
     const text=await res.text();
     const lines=text.split(/\r?\n/).filter(function(l){return l.trim();});
+    if(lines.length<2)return;
+    parseCsvLine(lines[0]).forEach(function(h,i){col[h.trim()]=i;});
+    function cell(r,name){return col[name]===undefined?'':(r[col[name]]||'').trim();}
     rows=lines.slice(1).map(parseCsvLine).filter(function(r){
-      return /^[○◯〇]$/.test((r[0]||'').trim())&&(r[2]||'').trim()!=='';
+      return /^[○◯〇]$/.test(cell(r,'表示'))&&cell(r,'商品名')!=='';
+    }).map(function(r){
+      return {season:cell(r,'季節'),name:cell(r,'商品名'),price:cell(r,'価格'),desc:cell(r,'説明'),image:cell(r,'画像')};
     });
   }catch(e){
-    console.warn('期間限定メニューの取得エラー:',e);
+    console.warn('限定メニューの取得エラー:',e);
     return;
   }
   if(rows.length===0)return;
 
   const used={};
   rows.forEach(function(r,i){
-    const seasonRaw=(r[1]||'').trim();
-    const season=SEASONS.indexOf(seasonRaw)>=0?seasonRaw:'その他';
-    const name=r[2].trim();
-    const priceRaw=(r[3]||'').trim();
-    const price=/^[\d,]+$/.test(priceRaw)?priceRaw.replace(/,/g,'')+'円':priceRaw;
-    const desc=(r[4]||'').trim();
-    let id=(r[5]||'').trim().replace(/[^A-Za-z0-9_-]/g,'');
+    const season=SEASONS.indexOf(r.season)>=0?r.season:'その他';
+    const name=r.name;
+    const price=/^[\d,]+$/.test(r.price)?r.price.replace(/,/g,'')+'円':r.price;
+    const desc=r.desc;
+    let id=r.image.replace(/[^A-Za-z0-9_-]/g,'');
     if(!id||used[id])id='seasonal-row'+(i+2);
     used[id]=true;
 
@@ -2045,11 +2048,11 @@ const SEASONAL_CSV_URL='ここに「ウェブに公開」したCSVのURLを貼�
   SEASONS.forEach(function(s){
     const n=groups[s].querySelectorAll('.menu-item').length;
     groups[s].querySelector('.sub-count').textContent=n+'品';
-    groups[s].style.display=n>0?'':'none';
+    const empty=groups[s].querySelector('.season-empty');
+    if(empty)empty.style.display=n>0?'none':'';
+    groups[s].style.display=(n>0||s!=='その他')?'':'none';
   });
   section.querySelector('.cat-count').textContent=rows.length+'品';
-  section.style.display='';
-  if(tocLink)tocLink.style.display='';
   if(typeof renderFavoritesList==='function')renderFavoritesList();
 })();
 </script>
