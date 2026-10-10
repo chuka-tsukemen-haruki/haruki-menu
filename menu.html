@@ -8,968 +8,148 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;800&display=swap" rel="stylesheet">
 <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Meiryo", "ヒラギノ角ゴ ProN", sans-serif;
-        }
-        body {
-            background-color: #f7f0dc;
-            color: #2a2013;
-            line-height: 1.7;
-            padding: 20px;
-            max-width: 950px;
-            margin: 0 auto;
-            word-break: keep-all;
-            overflow-wrap: break-word;
-        }
-        header {
-            text-align: center;
-            padding: 25px 0;
-            border-bottom: 2px solid #a8291f;
-            margin-bottom: 20px;
-        }
-        h1 {
-            color: #241812;
-            font-size: 2.1rem;
-            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
-            font-weight: 800;
-            letter-spacing: 0.06em;
-        }
-        .note {
-            font-size: 0.85rem;
-            color: #888;
-            margin-top: 8px;
-        }
-        .reservation-note {
-            font-size: 0.85rem;
-            color: #7c1e17;
-            margin-top: 8px;
-            font-weight: bold;
-        }
-        .home-link {
-            display: inline-block;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #7c1e17;
-            font-weight: bold;
-            text-decoration: none;
-            border-bottom: 1px solid #7c1e17;
-        }
-        .home-link:hover, .home-link:active {
-            color: #a8291f;
-            border-color: #a8291f;
-        }
-        .store-info {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px 14px;
-            margin-top: 14px;
-        }
-        .store-hours {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #241812;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        a.store-info-item.tel-link {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            background: #a8291f;
-            color: #fff;
-            border: 3px solid #7c1e17;
-            font-weight: bold;
-            font-size: 1rem;
-            padding: 8px 18px;
-            border-radius: 24px;
-            text-decoration: none;
-            min-height: 44px;
-            box-shadow: 0 2px 6px rgba(168,41,31,0.35);
-            transition: transform 0.15s, background 0.15s;
-        }
-        a.store-info-item.tel-link .tel-caption {
-            font-size: 0.68rem;
-            font-weight: 600;
-            opacity: 0.95;
-            letter-spacing: 0.02em;
-        }
-        a.store-info-item.tel-link:hover,
-        a.store-info-item.tel-link:active {
-            background: #7c1e17;
-            transform: scale(1.03);
-        }
-        @media (max-width: 600px) {
-            .store-info {
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-            }
-            a.store-info-item.tel-link {
-                width: 100%;
-                max-width: 320px;
-                justify-content: center;
-                box-sizing: border-box;
-            }
-        }
-        .spec {
-            font-size: 0.95rem;
-            color: #241812;
-            background: #f2e8d1;
-            border: 1px solid #e2cfa0;
-            padding: 12px 14px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            line-height: 1.9;
-            font-weight: 600;
-        }
-        .spec .spec-highlight {
-            color: #a8291f;
-            font-weight: 800;
-        }
-        /* ===== 詳細情報アコーディオン（麺の量／トッピング／辛さを個別に表示） ===== */
-        .info-accordions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        details.info-category {
-            background: #f2e8d1;
-            border: 1px solid #e2cfa0;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        details.info-category summary {
-            list-style: none;
-            cursor: pointer;
-            background: #ede1c8;
-            color: #52422b;
-            font-size: 0.95rem;
-            font-weight: bold;
-            padding: 10px 14px;
-            border-left: 3px solid #a8291f;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        details.info-category summary::-webkit-details-marker {
-            display: none;
-        }
-        details.info-category summary::marker {
-            content: "";
-        }
-        details.info-category summary .info-arrow {
-            font-size: 0.65rem;
-            color: #a9884f;
-            transition: transform 0.2s;
-        }
-        details.info-category[open] summary .info-arrow {
-            transform: rotate(180deg);
-        }
-        details.info-category .info-body {
-            padding: 14px;
-            background: #fffaf1;
-        }
-        .detail-block-body {
-            font-size: 0.9rem;
-            color: #241812;
-            line-height: 1.9;
-            font-weight: 600;
-        }
-        .detail-block-body .spec-highlight {
-            color: #a8291f;
-            font-weight: 800;
-        }
-        .portion-row, .spice-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-            padding: 8px 10px;
-            background: #f7f0dc;
-            border-radius: 4px;
-            margin-bottom: 6px;
-        }
-        .portion-row:last-child, .spice-row:last-child {
-            margin-bottom: 0;
-        }
-        .portion-name, .spice-name {
-            font-weight: bold;
-            color: #241812;
-            min-width: 76px;
-        }
-        .portion-amount {
-            color: #52422b;
-            font-size: 0.85rem;
-        }
-        .portion-price, .spice-price {
-            margin-left: auto;
-            color: #a8291f;
-            font-weight: bold;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-        .topping-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .topping-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #f2e8d1;
-            border: 1px solid #d3b676;
-            border-radius: 20px;
-            padding: 5px 6px 5px 12px;
-        }
-        .topping-chip .chip-name {
-            color: #241812;
-            font-weight: 700;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-        .topping-chip .chip-price {
-            color: #fff;
-            background: #a8291f;
-            font-weight: bold;
-            font-size: 0.72rem;
-            padding: 3px 9px;
-            border-radius: 10px;
-            white-space: nowrap;
-        }
-        .topping-groups {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .topping-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 10px;
-            background: #f7f0dc;
-            border-radius: 4px;
-        }
-        .topping-group-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            flex: 1;
-        }
-        .topping-group-chips .topping-chip {
-            padding: 5px 14px;
-        }
-        .topping-group-price {
-            margin-left: auto;
-            color: #a8291f;
-            font-weight: bold;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-        .menu-grid {
-            display: grid;
-            gap: 15px;
-        }
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #fffaf1;
-            border: 1px solid #e6d8b8;
-            padding: 12px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        .photo {
-            width: 100px;
-            height: 100px;
-            background-color: #ede1c8;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            color: #8a7c5e;
-            flex-shrink: 0;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-            background-size: cover;
-            background-position: center;
-        }
-        .photo:hover {
-            transform: scale(1.05);
-        }
-        .photo:active {
-            transform: scale(0.96);
-        }
-        .info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .info h3 {
-            font-size: 1.1rem;
-            margin-bottom: 2px;
-        }
-        .price {
-            color: #a8291f;
-            font-weight: bold;
-            font-size: 1.05rem;
-        }
-        .tokusei-note {
-            color: #7c1e17;
-            font-size: 0.78rem;
-            font-weight: 600;
-        }
-
-        /* ===== アコーディオン（カテゴリ一覧） ===== */
-        .menu-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        details.menu-category {
-            background: #fffaf1;
-            border: 1px solid #e6d8b8;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            scroll-margin-top: 15px;
-        }
-        details.menu-category summary {
-            list-style: none;
-            cursor: pointer;
-            background: transparent;
-            color: #241812;
-            font-size: 1.2rem;
-            font-family: "Shippori Mincho", "ヒラギノ明朝 ProN", serif;
-            font-weight: 800;
-            letter-spacing: 0.02em;
-            padding: 14px 16px;
-            border-left: 5px solid #a8291f;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        details.menu-category summary::-webkit-details-marker {
-            display: none;
-        }
-        details.menu-category summary::marker {
-            content: "";
-        }
-        details.menu-category summary .cat-count {
-            font-size: 0.8rem;
-            font-weight: normal;
-            color: #a9884f;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        details.menu-category summary .cat-count::after {
-            content: "▼";
-            font-size: 0.7rem;
-            transition: transform 0.2s;
-        }
-        details.menu-category[open] summary .cat-count::after {
-            transform: rotate(180deg);
-        }
-        details.menu-category .category-body {
-            padding: 16px;
-            border-radius: 0 0 8px 8px;
-        }
-
-        /* ===== 多重アコーディオン（サブカテゴリ） ===== */
-        .subcats {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
- details.sub-category {
-            background: #f2e8d1;
-            border: 1px solid #e2cfa0;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        details.sub-category summary {
-            list-style: none;
-            cursor: pointer;
-            background: #ede1c8;
-            color: #52422b;
-            font-size: 0.98rem;
-            font-weight: bold;
-            padding: 10px 14px;
-            border-left: 3px solid #d3b676;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        details.sub-category summary::-webkit-details-marker {
-            display: none;
-        }
-        details.sub-category summary::marker {
-            content: "";
-        }
-        details.sub-category summary .sub-count {
-            font-size: 0.75rem;
-            font-weight: normal;
-            color: #a9884f;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        details.sub-category summary .sub-count::after {
-            content: "▼";
-            font-size: 0.65rem;
-            transition: transform 0.2s;
-        }
-        details.sub-category[open] summary .sub-count::after {
-            transform: rotate(180deg);
-        }
-        details.sub-category .menu-grid {
-            padding: 12px;
-        }
-
-        /* ===== 検索ボックス ===== */
-        .search-bar {
-            position: sticky;
-            top: 0;
-            z-index: 400;
-            background: #fffaf1;
-            padding: 10px 16px;
-            border-bottom: 1px solid #e6d8b8;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .search-bar input[type="text"] {
-            flex: 1;
-            padding: 10px 12px;
-            font-size: 0.95rem;
-            border: 1px solid #d3b676;
-            border-radius: 6px;
-            background: #fff;
-        }
-        .search-bar input[type="text"]:focus {
-            outline: none;
-            border-color: #a8291f;
-        }
-        .search-clear-btn {
-            background: #eee;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding: 10px 14px;
-            font-size: 0.85rem;
-            color: #555;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .search-no-result {
-            display: none;
-            text-align: center;
-            color: #9c8760;
-            padding: 24px 16px;
-            font-size: 0.95rem;
-        }
-        .search-no-result.active {
-            display: block;
-        }
-        .search-hit-count {
-            font-size: 0.8rem;
-            color: #7c1e17;
-            padding: 0 16px 4px;
-            display: none;
-        }
-        .search-hit-count.active {
-            display: block;
-        }
-
-        /* ===== お気に入り登録エリア ===== */
-        .like-area {
-            margin-top: 10px;
-        }
-        .like-btn {
-            background-color: #f8f8f8;
-            border: 1px solid #ccc;
-            color: #444;
-            padding: 10px 18px;
-            min-height: 44px;
-            min-width: 44px;
-            border-radius: 22px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            -webkit-tap-highlight-color: rgba(168,41,31,0.25);
-        }
-        .like-btn.active {
-            background-color: #a8291f;
-            border-color: #a8291f;
-            color: white;
-        }
-        .like-btn:hover {
-            opacity: 0.9;
-            transform: scale(1.03);
-        }
-        .like-btn:active {
-            transform: scale(0.97);
-        }
-        /* いいね数表示：完全に非表示（集計・表示はしない仕様） */
-        .like-count {
-            display: none;
-        }
-
-        /* ===== お知らせ ===== */
-        .announcement-section {
-            display: none;
-            margin: 4px 0 20px;
-        }
-        .announcement-section.active {
-            display: block;
-        }
-        .announcement-list {
-            background: linear-gradient(135deg, #f6e6bd, #e8c27a);
-            border: 4px solid #a8291f;
-            border-radius: 8px;
-            padding: 18px 20px;
-            box-shadow: 0 3px 10px rgba(168,41,31,0.25);
-        }
-        .announcement-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #a8291f;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-        .announcement-item {
-            color: #241812;
-            font-size: 1.05rem;
-            font-weight: 700;
-            line-height: 1.8;
-            white-space: pre-wrap;
-        }
-        .announcement-item + .announcement-item {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #a8291f;
-        }
-
-        /* ===== お気に入り登録一覧 ===== */
-        .favorite-entry {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #fffaf1;
-            padding: 12px 15px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            margin-bottom: 10px;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: transform 0.15s, border-color 0.15s;
-        }
-        .favorite-entry:hover, .favorite-entry:active {
-            transform: scale(1.02);
-            border-color: #d3b676;
-        }
-        .favorite-entry .fav-name {
-            font-weight: bold;
-        }
-        .favorite-entry .fav-jump {
-            font-size: 0.75rem;
-            color: #7c1e17;
-            margin-left: 8px;
-        }
-        .favorite-entry .fav-price {
-            color: #a8291f;
-            font-weight: bold;
-        }
-        .favorites-empty {
-            color: #9c8760;
-            font-size: 0.95rem;
-        }
-
-        /* ===== 常に表示される「全部閉じる」ボタン ===== */
-        .collapse-fab {
-            position: fixed;
-            right: 16px;
-            bottom: 84px;
-            z-index: 500;
-            background: #241812;
-            color: #fff;
-            border: none;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.55rem;
-            line-height: 1.1;
-            cursor: pointer;
-            text-decoration: none;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-        .collapse-fab:hover, .collapse-fab:active {
-            transform: scale(1.08);
-            background: #a8291f;
-        }
-        .collapse-fab .collapse-fab-icon {
-            font-size: 1.1rem;
-            line-height: 1;
-        }
-
-        /* ===== 常に表示される「お気に入り」ボタン ===== */
-        .fav-fab {
-            position: fixed;
-            right: 16px;
-            bottom: 152px;
-            z-index: 500;
-            background: #a8291f;
-            color: #fff;
-            border: none;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.55rem;
-            line-height: 1.1;
-            cursor: pointer;
-            text-decoration: none;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-        .fav-fab:hover, .fav-fab:active {
-            transform: scale(1.08);
-            background: #7c1e17;
-        }
-        .fav-fab .fav-fab-icon {
-            font-size: 1.1rem;
-            line-height: 1;
-        }
-        .fav-fab-badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: #fff;
-            color: #a8291f;
-            border: 2px solid #a8291f;
-            border-radius: 50%;
-            min-width: 20px;
-            height: 20px;
-            padding: 0 3px;
-            font-size: 0.65rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            display: none;
-        }
-        .fav-fab-badge.active {
-            display: flex;
-        }
-
-        /* ===== 左上ハンバーガーボタン ===== */
-        .hamburger-btn {
-            position: fixed;
-            left: 16px;
-            top: 16px;
-            z-index: 500;
-            background: #241812;
-            color: #fff;
-            border: none;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            cursor: pointer;
-        }
-        .hamburger-btn:hover, .hamburger-btn:active {
-            background: #a8291f;
-        }
-
-        /* ===== サイドドロワー（目次＋お気に入り） ===== */
-        .drawer-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 700;
-        }
-        .drawer-overlay.active {
-            display: block;
-        }
-        .drawer-panel {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 701;
-            width: 260px;
-            max-width: 82vw;
-            background: #fff;
-            box-shadow: 2px 0 16px rgba(0,0,0,0.3);
-            overflow-y: auto;
-            transform: translateX(-100%);
-            transition: transform 0.25s;
-        }
-        .drawer-panel.active {
-            transform: translateX(0);
-        }
-        .drawer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 16px;
-            background: #fffaf1;
-            border-bottom: 1px solid #e6d8b8;
-        }
-        .drawer-header span {
-            font-weight: bold;
-            color: #241812;
-        }
-        .drawer-close {
-            background: none;
-            border: none;
-            font-size: 1.3rem;
-            color: #999;
-            cursor: pointer;
-            line-height: 1;
-        }
-        .drawer-top-link {
-            display: block;
-            padding: 12px 16px;
-            color: #7c1e17;
-            font-weight: bold;
-            text-decoration: none;
-            border-bottom: 1px solid #e6d8b8;
-        }
-        .drawer-section-title {
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: #7c1e17;
-            padding: 14px 16px 4px;
-        }
-        .drawer-panel a.drawer-cat-link {
-            display: block;
-            padding: 10px 16px;
-            color: #333;
-            text-decoration: none;
-            font-size: 0.92rem;
-        }
-        .drawer-panel a.drawer-cat-link:hover, .drawer-panel a.drawer-cat-link:active {
-            background: #f2e8d1;
-            color: #241812;
-        }
-        #drawerFavoritesList {
-            padding: 0 16px 16px;
-        }
-
-        /* ===== お気に入り専用パネル ===== */
-        .fav-panel-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 800;
-        }
-        .fav-panel-overlay.active {
-            display: block;
-        }
-        .fav-panel {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 801;
-            max-height: 75vh;
-            background: #fff;
-            border-radius: 16px 16px 0 0;
-            box-shadow: 0 -2px 16px rgba(0,0,0,0.3);
-            overflow-y: auto;
-            transform: translateY(100%);
-            transition: transform 0.25s;
-        }
-        .fav-panel.active {
-            transform: translateY(0);
-        }
-        .fav-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 18px;
-            background: #fffaf1;
-            border-bottom: 1px solid #e6d8b8;
-            position: sticky;
-            top: 0;
-        }
-        .fav-panel-header span {
-            font-weight: bold;
-            color: #241812;
-            font-size: 1.05rem;
-        }
-        .fav-panel-close {
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            color: #999;
-            cursor: pointer;
-            line-height: 1;
-        }
-        .fav-panel-body {
-            padding: 14px 18px 24px;
-        }
-        .fav-panel-hint {
-            font-size: 0.8rem;
-            color: #7c1e17;
-            margin-bottom: 10px;
-        }
-
-        /* 拡大画像モーダル */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.85);
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            max-width: 90vw;
-            max-height: 90vh;
-            max-height: 90dvh;
-            box-sizing: border-box;
-            overflow: auto;
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            position: relative;
-        }
-        .modal-img {
-            max-width: 100%;
-            max-height: calc(90vh - 60px);
-            max-height: calc(90dvh - 60px);
-            display: block;
-            border-radius: 4px;
-            object-fit: contain;
-        }
-        .modal-title {
-            text-align: center;
-            margin-top: 10px;
-            color: #333;
-            font-weight: bold;
-        }
-        .modal-close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: #a8291f;
-    color: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Meiryo","ヒラギノ角ゴ ProN",sans-serif}
+body{background-color:#f7f0dc;color:#2a2013;line-height:1.7;padding:20px;max-width:950px;margin:0 auto;word-break:keep-all;overflow-wrap:break-word}
+header{text-align:center;padding:25px 0;border-bottom:2px solid #a8291f;margin-bottom:20px}
+h1{color:#241812;font-size:2.1rem;font-family:"Shippori Mincho","ヒラギノ明朝 ProN",serif;font-weight:800;letter-spacing:.06em}
+.reservation-note{font-size:.85rem;color:#7c1e17;margin-top:8px;font-weight:bold}
+.home-link{display:inline-block;margin-top:10px;font-size:.9rem;color:#7c1e17;font-weight:bold;text-decoration:none;border-bottom:1px solid #7c1e17}
+.home-link:hover,.home-link:active{color:#a8291f;border-color:#a8291f}
+.store-info{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 14px;margin-top:14px}
+.store-hours{display:inline-flex;align-items:center;gap:6px;color:#241812;font-weight:bold;font-size:1rem}
+a.store-info-item.tel-link{display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:#a8291f;color:#fff;border:3px solid #7c1e17;font-weight:bold;font-size:1rem;padding:8px 18px;border-radius:24px;text-decoration:none;min-height:44px;box-shadow:0 2px 6px rgba(168,41,31,.35);transition:transform .15s,background .15s}
+a.store-info-item.tel-link .tel-caption{font-size:.68rem;font-weight:600;opacity:.95;letter-spacing:.02em}
+a.store-info-item.tel-link:hover,a.store-info-item.tel-link:active{background:#7c1e17;transform:scale(1.03)}
+@media (max-width:600px){.store-info{flex-direction:column;align-items:center;gap:8px}a.store-info-item.tel-link{width:100%;max-width:320px;justify-content:center}}
+.spec{font-size:.95rem;color:#241812;background:#f2e8d1;border:1px solid #e2cfa0;padding:12px 14px;border-radius:6px;margin-bottom:15px;line-height:1.9;font-weight:600}
+.info-accordions{display:flex;flex-direction:column;gap:10px;margin-bottom:15px}
+details.info-category{background:#f2e8d1;border:1px solid #e2cfa0;border-radius:6px;overflow:hidden}
+details.info-category summary{list-style:none;cursor:pointer;background:#ede1c8;color:#52422b;font-size:.95rem;font-weight:bold;padding:10px 14px;border-left:3px solid #a8291f;display:flex;justify-content:space-between;align-items:center}
+details.info-category summary::-webkit-details-marker{display:none}
+details.info-category summary::marker{content:""}
+details.info-category summary .info-arrow{font-size:.65rem;color:#a9884f;transition:transform .2s}
+details.info-category[open] summary .info-arrow{transform:rotate(180deg)}
+details.info-category .info-body{padding:14px;background:#fffaf1}
+.portion-row,.spice-row{display:flex;align-items:center;gap:10px;font-size:.9rem;padding:8px 10px;background:#f7f0dc;border-radius:4px;margin-bottom:6px}
+.portion-row:last-child,.spice-row:last-child{margin-bottom:0}
+.portion-name,.spice-name{font-weight:bold;color:#241812;min-width:76px}
+.portion-amount{color:#52422b;font-size:.85rem}
+.portion-price,.spice-price{margin-left:auto;color:#a8291f;font-weight:bold;font-size:.85rem;white-space:nowrap}
+.topping-chips{display:flex;flex-wrap:wrap;gap:8px}
+.topping-chip{display:inline-flex;align-items:center;gap:6px;background:#f2e8d1;border:1px solid #d3b676;border-radius:20px;padding:5px 6px 5px 12px}
+.topping-chip .chip-name{color:#241812;font-weight:700;font-size:.85rem;white-space:nowrap}
+.topping-groups{display:flex;flex-direction:column;gap:8px}
+.topping-group{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f7f0dc;border-radius:4px}
+.topping-group-chips{display:flex;flex-wrap:wrap;gap:8px;flex:1}
+.topping-group-chips .topping-chip{padding:5px 14px}
+.topping-group-price{margin-left:auto;color:#a8291f;font-weight:bold;font-size:.85rem;white-space:nowrap}
+.menu-grid{display:grid;gap:15px}
+.menu-item{display:flex;align-items:center;gap:15px;background:#fffaf1;border:1px solid #e6d8b8;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);position:relative}
+.photo{width:100px;height:100px;background-color:#ede1c8;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#8a7c5e;flex-shrink:0;text-align:center;cursor:pointer;transition:transform .2s;background-size:cover;background-position:center}
+.photo:hover{transform:scale(1.05)}
+.photo:active{transform:scale(.96)}
+.info{flex:1;display:flex;flex-direction:column;gap:4px}
+.info h3{font-size:1.1rem;margin-bottom:2px}
+.price{color:#a8291f;font-weight:bold;font-size:1.05rem}
+.tokusei-note{color:#7c1e17;font-size:.78rem;font-weight:600}
+.menu-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.nested-list{display:flex;flex-direction:column;gap:10px}
+details.menu-category{background:#fffaf1;border:1px solid #e6d8b8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.1);scroll-margin-top:15px}
+details.menu-category details.menu-category{box-shadow:none}
+details.menu-category summary{list-style:none;cursor:pointer;background:transparent;color:#241812;font-size:1.2rem;font-family:"Shippori Mincho","ヒラギノ明朝 ProN",serif;font-weight:800;letter-spacing:.02em;padding:14px 16px;border-left:5px solid #a8291f;display:flex;justify-content:space-between;align-items:center}
+details.menu-category details.menu-category summary{font-size:1.05rem}
+details.menu-category summary::-webkit-details-marker{display:none}
+details.menu-category summary::marker{content:""}
+details.menu-category summary .cat-count{font-size:.8rem;font-weight:normal;color:#a9884f;display:flex;align-items:center;gap:8px}
+details.menu-category summary .cat-count::after{content:"▼";font-size:.7rem;transition:transform .2s}
+details.menu-category[open]>summary .cat-count::after{transform:rotate(180deg)}
+details.menu-category .category-body{padding:16px;border-radius:0 0 8px 8px}
+.subcats{display:flex;flex-direction:column;gap:10px}
+details.sub-category{background:#f2e8d1;border:1px solid #e2cfa0;border-radius:6px;overflow:hidden}
+details.sub-category summary{list-style:none;cursor:pointer;background:#ede1c8;color:#52422b;font-size:.98rem;font-weight:bold;padding:10px 14px;border-left:3px solid #d3b676;display:flex;justify-content:space-between;align-items:center}
+details.sub-category summary::-webkit-details-marker{display:none}
+details.sub-category summary::marker{content:""}
+details.sub-category summary .sub-count{font-size:.75rem;font-weight:normal;color:#a9884f;display:flex;align-items:center;gap:6px}
+details.sub-category summary .sub-count::after{content:"▼";font-size:.65rem;transition:transform .2s}
+details.sub-category[open] summary .sub-count::after{transform:rotate(180deg)}
+details.sub-category .menu-grid{padding:12px}
+.search-bar{position:sticky;top:0;z-index:400;background:#fffaf1;padding:10px 16px;border-bottom:1px solid #e6d8b8;display:flex;align-items:center;gap:8px}
+.search-bar input[type="text"]{flex:1;padding:10px 12px;font-size:.95rem;border:1px solid #d3b676;border-radius:6px;background:#fff}
+.search-bar input[type="text"]:focus{outline:none;border-color:#a8291f}
+.search-clear-btn{background:#eee;border:1px solid #ccc;border-radius:6px;padding:10px 14px;font-size:.85rem;color:#555;cursor:pointer;white-space:nowrap}
+.search-no-result{display:none;text-align:center;color:#9c8760;padding:24px 16px;font-size:.95rem}
+.search-no-result.active{display:block}
+.search-hit-count{font-size:.8rem;color:#7c1e17;padding:0 16px 4px;display:none}
+.search-hit-count.active{display:block}
+.like-area{margin-top:10px}
+.like-btn{background-color:#f8f8f8;border:1px solid #ccc;color:#444;padding:10px 18px;min-height:44px;min-width:44px;border-radius:22px;cursor:pointer;font-size:14px;transition:all .2s ease;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:rgba(168,41,31,.25)}
+.like-btn.active{background-color:#a8291f;border-color:#a8291f;color:#fff}
+.like-btn:hover{opacity:.9;transform:scale(1.03)}
+.like-btn:active{transform:scale(.97)}
+.like-count{display:none}
+.announcement-section{display:none;margin:4px 0 20px}
+.announcement-section.active{display:block}
+.announcement-list{background:linear-gradient(135deg,#f6e6bd,#e8c27a);border:4px solid #a8291f;border-radius:8px;padding:18px 20px;box-shadow:0 3px 10px rgba(168,41,31,.25)}
+.announcement-title{font-size:1.1rem;font-weight:800;color:#a8291f;display:inline-flex;align-items:center;gap:6px;margin-bottom:12px}
+.announcement-item{color:#241812;font-size:1.05rem;font-weight:700;line-height:1.8;white-space:pre-wrap}
+.announcement-item+.announcement-item{margin-top:10px;padding-top:10px;border-top:1px dashed #a8291f}
+.favorite-entry{display:flex;justify-content:space-between;align-items:center;background:#fffaf1;padding:12px 15px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:10px;cursor:pointer;border:1px solid transparent;transition:transform .15s,border-color .15s}
+.favorite-entry:hover,.favorite-entry:active{transform:scale(1.02);border-color:#d3b676}
+.favorite-entry .fav-name{font-weight:bold}
+.favorite-entry .fav-jump{font-size:.75rem;color:#7c1e17;margin-left:8px}
+.favorite-entry .fav-price{color:#a8291f;font-weight:bold}
+.favorites-empty{color:#9c8760;font-size:.95rem}
+.collapse-fab,.fav-fab{position:fixed;right:16px;z-index:500;border:none;width:56px;height:56px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.55rem;line-height:1.1;cursor:pointer;color:#fff;transition:transform .2s,opacity .2s}
+.collapse-fab{bottom:84px;background:#241812}
+.collapse-fab:hover,.collapse-fab:active{transform:scale(1.08);background:#a8291f}
+.fav-fab{bottom:152px;background:#a8291f}
+.fav-fab:hover,.fav-fab:active{transform:scale(1.08);background:#7c1e17}
+.collapse-fab-icon,.fav-fab-icon{font-size:1.1rem;line-height:1}
+.fav-fab-badge{position:absolute;top:-4px;right:-4px;background:#fff;color:#a8291f;border:2px solid #a8291f;border-radius:50%;min-width:20px;height:20px;padding:0 3px;font-size:.65rem;font-weight:bold;align-items:center;justify-content:center;display:none}
+.fav-fab-badge.active{display:flex}
+.hamburger-btn{position:fixed;left:16px;top:16px;z-index:500;background:#241812;color:#fff;border:none;width:48px;height:48px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer}
+.hamburger-btn:hover,.hamburger-btn:active{background:#a8291f}
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:700}
+.drawer-overlay.active{display:block}
+.drawer-panel{position:fixed;left:0;top:0;bottom:0;z-index:701;width:260px;max-width:82vw;background:#fff;box-shadow:2px 0 16px rgba(0,0,0,.3);overflow-y:auto;transform:translateX(-100%);transition:transform .25s}
+.drawer-panel.active{transform:translateX(0)}
+.drawer-header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#fffaf1;border-bottom:1px solid #e6d8b8}
+.drawer-header span{font-weight:bold;color:#241812}
+.drawer-close{background:none;border:none;font-size:1.3rem;color:#999;cursor:pointer;line-height:1}
+.drawer-top-link{display:block;padding:12px 16px;color:#7c1e17;font-weight:bold;text-decoration:none;border-bottom:1px solid #e6d8b8}
+.drawer-section-title{font-size:.8rem;font-weight:bold;color:#7c1e17;padding:14px 16px 4px}
+.drawer-panel a.drawer-cat-link{display:block;padding:10px 16px;color:#333;text-decoration:none;font-size:.92rem}
+.drawer-panel a.drawer-cat-link.child{padding-left:32px;font-size:.86rem}
+.drawer-panel a.drawer-cat-link:hover,.drawer-panel a.drawer-cat-link:active{background:#f2e8d1;color:#241812}
+.fav-panel-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:800}
+.fav-panel-overlay.active{display:block}
+.fav-panel{position:fixed;left:0;right:0;bottom:0;z-index:801;max-height:75vh;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -2px 16px rgba(0,0,0,.3);overflow-y:auto;transform:translateY(100%);transition:transform .25s}
+.fav-panel.active{transform:translateY(0)}
+.fav-panel-header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#fffaf1;border-bottom:1px solid #e6d8b8;position:sticky;top:0}
+.fav-panel-header span{font-weight:bold;color:#241812;font-size:1.05rem}
+.fav-panel-close{background:none;border:none;font-size:1.4rem;color:#999;cursor:pointer;line-height:1}
+.fav-panel-body{padding:14px 18px 24px}
+.fav-panel-hint{font-size:.8rem;color:#7c1e17;margin-bottom:10px}
+.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,.85);justify-content:center;align-items:center;padding:20px}
+.modal.active{display:flex}
+.modal-content{max-width:90vw;max-height:90vh;max-height:90dvh;overflow:auto;background:#fff;padding:10px;border-radius:8px;position:relative}
+.modal-img{max-width:100%;max-height:calc(90vh - 60px);max-height:calc(90dvh - 60px);display:block;border-radius:4px;object-fit:contain}
+.modal-title{text-align:center;margin-top:10px;color:#333;font-weight:bold}
+.modal-close{position:absolute;top:8px;right:8px;background:#a8291f;color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;border:none}
+.modal-placeholder{width:300px;height:300px;background:#ede1c8;display:flex;align-items:center;justify-content:center;color:#8a7c5e;border-radius:4px}
+.menu-item.jump-highlight{animation:jumpHighlightAnim 1.6s ease}
+@keyframes jumpHighlightAnim{0%{background-color:#fff3cd;box-shadow:0 0 0 3px #d3b676}100%{background-color:#fffaf1;box-shadow:0 1px 3px rgba(0,0,0,.1)}}
+@media (max-width:600px){
+.menu-item{flex-direction:column;text-align:center}
+.photo{width:140px;height:140px}
+.hamburger-btn{left:12px;top:12px;width:44px;height:44px}
+.collapse-fab{right:12px;bottom:76px;width:52px;height:52px}
+.fav-fab{right:12px;bottom:140px;width:52px;height:52px}
+.drawer-panel{width:220px}
+.favorite-entry{flex-direction:column;gap:6px}
+details.menu-category summary{font-size:1rem;padding:12px}
 }
-        .modal-placeholder {
-            width: 300px;
-            height: 300px;
-            background: #ede1c8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #8a7c5e;
-            border-radius: 4px;
-        }
-
-        /* ハイライト演出（お気に入りからジャンプした商品を一時的に強調） */
-        .menu-item.jump-highlight {
-            animation: jumpHighlightAnim 1.6s ease;
-        }
-        @keyframes jumpHighlightAnim {
-            0% { background-color: #fff3cd; box-shadow: 0 0 0 3px #d3b676; }
-            100% { background-color: #fffaf1; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        }
-
-        /* スマホ表示対応 */
-        @media (max-width: 600px) {
-            .menu-item {
-                flex-direction: column;
-                text-align: center;
-            }
-            .photo {
-                width: 140px;
-                height: 140px;
-            }
-            .like-area {
-                justify-content: center;
-            }
-            .hamburger-btn {
-                left: 12px;
-                top: 12px;
-                width: 44px;
-                height: 44px;
-            }
-            .collapse-fab {
-                right: 12px;
-                bottom: 76px;
-                width: 52px;
-                height: 52px;
-            }
-            .fav-fab {
-                right: 12px;
-                bottom: 140px;
-                width: 52px;
-                height: 52px;
-            }
-            .drawer-panel {
-                width: 220px;
-            }
-            .favorite-entry {
-                flex-direction: column;
-                gap: 6px;
-            }
-            details.menu-category summary {
-                font-size: 1rem;
-                padding: 12px;
-            }
-        }
-    </style>
+</style>
 </head>
 <body>
 <header id="top">
@@ -990,15 +170,32 @@
 </div>
 <div class="search-hit-count" id="searchHitCount"></div>
 <div class="search-no-result" id="searchNoResult">該当する商品が見つかりませんでした</div>
-<div class="menu-grid" id="searchResultsGrid" style="display:none; padding: 0 16px;"></div>
+<div class="menu-grid" id="searchResultsGrid" style="display:none;padding:0 16px"></div>
 <div class="announcement-section" id="announcementSection">
 <div class="announcement-list" id="announcementList">
 <div class="announcement-title">📢 お知らせ</div>
 <div class="announcement-items" id="announcementItems"></div>
 </div>
 </div>
+
 <main>
 <div class="menu-list">
+<details class="menu-category" id="section-seasonal" style="display:none">
+<summary>期間限定メニュー<span class="cat-count">0品</span></summary>
+<div class="category-body">
+<div class="subcats">
+<details class="sub-category" data-season="春" style="display:none"><summary>春<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
+<details class="sub-category" data-season="夏" style="display:none"><summary>夏<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
+<details class="sub-category" data-season="秋" style="display:none"><summary>秋<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
+<details class="sub-category" data-season="冬" style="display:none"><summary>冬<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
+<details class="sub-category" data-season="その他" style="display:none"><summary>その他<span class="sub-count">0品</span></summary><div class="menu-grid"></div></details>
+</div>
+</div>
+</details>
+<details class="menu-category" id="section-grand">
+<summary>グランドメニュー<span class="cat-count">124品</span></summary>
+<div class="category-body">
+<div class="nested-list">
 <details class="menu-category" id="section-tsukemen">
 <summary>つけ麺メニュー<span class="cat-count">13品</span></summary>
 <div class="category-body">
@@ -1015,32 +212,7 @@
 <details class="info-category">
 <summary><span>🧅 トッピング</span><span class="info-arrow">▼</span></summary>
 <div class="info-body">
-<div class="topping-groups">
-<div class="topping-group">
-<div class="topping-group-chips">
-<span class="topping-chip"><span class="chip-name">チャーシュー</span></span>
-</div>
-<span class="topping-group-price">280円</span>
-</div>
-<div class="topping-group">
-<div class="topping-group-chips">
-<span class="topping-chip"><span class="chip-name">ネギ</span></span>
-<span class="topping-chip"><span class="chip-name">玉ねぎ</span></span>
-<span class="topping-chip"><span class="chip-name">のり</span></span>
-<span class="topping-chip"><span class="chip-name">野菜</span></span>
-<span class="topping-chip"><span class="chip-name">わかめ</span></span>
-<span class="topping-chip"><span class="chip-name">メンマ</span></span>
-<span class="topping-chip"><span class="chip-name">味玉</span></span>
-</div>
-<span class="topping-group-price">130円</span>
-</div>
-<div class="topping-group">
-<div class="topping-group-chips">
-<span class="topping-chip"><span class="chip-name">バター</span></span>
-</div>
-<span class="topping-group-price">50円</span>
-</div>
-</div>
+<div class="topping-groups"><div class="topping-group"><div class="topping-group-chips"><span class="topping-chip"><span class="chip-name">チャーシュー</span></span></div><span class="topping-group-price">280円</span></div><div class="topping-group"><div class="topping-group-chips"><span class="topping-chip"><span class="chip-name">ネギ</span></span><span class="topping-chip"><span class="chip-name">玉ねぎ</span></span><span class="topping-chip"><span class="chip-name">のり</span></span><span class="topping-chip"><span class="chip-name">野菜</span></span><span class="topping-chip"><span class="chip-name">わかめ</span></span><span class="topping-chip"><span class="chip-name">メンマ</span></span><span class="topping-chip"><span class="chip-name">味玉</span></span></div><span class="topping-group-price">130円</span></div><div class="topping-group"><div class="topping-group-chips"><span class="topping-chip"><span class="chip-name">バター</span></span></div><span class="topping-group-price">50円</span></div></div>
 </div>
 </details>
 </div>
@@ -1197,32 +369,7 @@
 <details class="info-category">
 <summary><span>🧅 トッピング</span><span class="info-arrow">▼</span></summary>
 <div class="info-body">
-<div class="topping-groups">
-<div class="topping-group">
-<div class="topping-group-chips">
-<span class="topping-chip"><span class="chip-name">チャーシュー</span></span>
-</div>
-<span class="topping-group-price">280円</span>
-</div>
-<div class="topping-group">
-<div class="topping-group-chips">
-<span class="topping-chip"><span class="chip-name">ネギ</span></span>
-<span class="topping-chip"><span class="chip-name">玉ねぎ</span></span>
-<span class="topping-chip"><span class="chip-name">のり</span></span>
-<span class="topping-chip"><span class="chip-name">野菜</span></span>
-<span class="topping-chip"><span class="chip-name">わかめ</span></span>
-<span class="topping-chip"><span class="chip-name">メンマ</span></span>
-<span class="topping-chip"><span class="chip-name">味玉</span></span>
-</div>
-<span class="topping-group-price">130円</span>
-</div>
-<div class="topping-group">
-<div class="topping-group-chips">
-<span class="topping-chip"><span class="chip-name">バター</span></span>
-</div>
-<span class="topping-group-price">50円</span>
-</div>
-</div>
+<div class="topping-groups"><div class="topping-group"><div class="topping-group-chips"><span class="topping-chip"><span class="chip-name">チャーシュー</span></span></div><span class="topping-group-price">280円</span></div><div class="topping-group"><div class="topping-group-chips"><span class="topping-chip"><span class="chip-name">ネギ</span></span><span class="topping-chip"><span class="chip-name">玉ねぎ</span></span><span class="topping-chip"><span class="chip-name">のり</span></span><span class="topping-chip"><span class="chip-name">野菜</span></span><span class="topping-chip"><span class="chip-name">わかめ</span></span><span class="topping-chip"><span class="chip-name">メンマ</span></span><span class="topping-chip"><span class="chip-name">味玉</span></span></div><span class="topping-group-price">130円</span></div><div class="topping-group"><div class="topping-group-chips"><span class="topping-chip"><span class="chip-name">バター</span></span></div><span class="topping-group-price">50円</span></div></div>
 </div>
 </details>
 <details class="info-category">
@@ -1572,8 +719,7 @@
 <summary>チャーハン類<span class="cat-count">10品</span></summary>
 <div class="category-body">
 <div class="spec">※大盛り＋100円</div>
-<div class="menu-grid">
-<div class="menu-item" data-id="chahan-1" data-tags="rice">
+<div class="menu-grid"><div class="menu-item" data-id="chahan-1" data-tags="rice">
 <div class="photo" data-name="半チャーハン">写真挿入</div>
 <div class="info">
 <h3>半チャーハン</h3>
@@ -1583,8 +729,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="chahan-2" data-tags="rice">
+</div><div class="menu-item" data-id="chahan-2" data-tags="rice">
 <div class="photo" data-name="チャーハン">写真挿入</div>
 <div class="info">
 <h3>チャーハン</h3>
@@ -1594,8 +739,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="chahan-3" data-tags="egg,rice">
+</div><div class="menu-item" data-id="chahan-3" data-tags="egg,rice">
 <div class="photo" data-name="卵チャーハン">写真挿入</div>
 <div class="info">
 <h3>卵チャーハン</h3>
@@ -1605,8 +749,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="chahan-4" data-tags="seafood,rice">
+</div><div class="menu-item" data-id="chahan-4" data-tags="seafood,rice">
 <div class="photo" data-name="鮭チャーハン">写真挿入</div>
 <div class="info">
 <h3>鮭チャーハン</h3>
@@ -1616,8 +759,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="chahan-5" data-tags="vegetable,rice">
+</div><div class="menu-item" data-id="chahan-5" data-tags="vegetable,rice">
 <div class="photo" data-name="野菜チャーハン">写真挿入</div>
 <div class="info">
 <h3>野菜チャーハン</h3>
@@ -1627,8 +769,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="chahan-6" data-tags="shrimp,rice">
+</div><div class="menu-item" data-id="chahan-6" data-tags="shrimp,rice">
 <div class="photo" data-name="エビチャーハン">写真挿入</div>
 <div class="info">
 <h3>エビチャーハン</h3>
@@ -1638,8 +779,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="chahan-7" data-tags="vegetable,spicy,rice">
+</div><div class="menu-item" data-id="chahan-7" data-tags="vegetable,spicy,rice">
 <div class="photo" data-name="キムチチャーハン">写真挿入</div>
 <div class="info">
 <h3>キムチチャーハン</h3>
@@ -1649,8 +789,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="chahan-8" data-tags="rice">
+</div><div class="menu-item" data-id="chahan-8" data-tags="rice">
 <div class="photo" data-name="スタミナチャーハン">写真挿入</div>
 <div class="info">
 <h3>スタミナチャーハン</h3>
@@ -1660,8 +799,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="chahan-9" data-tags="rice">
+</div><div class="menu-item" data-id="chahan-9" data-tags="rice">
 <div class="photo" data-name="ガーリックチャーハン">写真挿入</div>
 <div class="info">
 <h3>ガーリックチャーハン</h3>
@@ -1671,8 +809,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="chahan-10" data-tags="pork,rice">
+</div><div class="menu-item" data-id="chahan-10" data-tags="pork,rice">
 <div class="photo" data-name="チャーシューチャーハン">写真挿入</div>
 <div class="info">
 <h3>チャーシューチャーハン</h3>
@@ -1682,16 +819,14 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 </div>
 </details>
 <details class="menu-category" id="section-rice">
 <summary>ご飯・丼もの<span class="cat-count">7品</span></summary>
 <div class="category-body">
 <div class="spec">※大盛り＋50円</div>
-<div class="menu-grid">
-<div class="menu-item" data-id="rice-1" data-tags="rice">
+<div class="menu-grid"><div class="menu-item" data-id="rice-1" data-tags="rice">
 <div class="photo" data-name="小ライス">写真挿入</div>
 <div class="info">
 <h3>小ライス</h3>
@@ -1701,8 +836,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="rice-2" data-tags="rice">
+</div><div class="menu-item" data-id="rice-2" data-tags="rice">
 <div class="photo" data-name="ライス">写真挿入</div>
 <div class="info">
 <h3>ライス</h3>
@@ -1712,8 +846,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="rice-3" data-tags="rice">
+</div><div class="menu-item" data-id="rice-3" data-tags="rice">
 <div class="photo" data-name="ミニからし明太ご飯">写真挿入</div>
 <div class="info">
 <h3>ミニからし明太ご飯</h3>
@@ -1723,8 +856,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="rice-4" data-tags="rice">
+</div><div class="menu-item" data-id="rice-4" data-tags="rice">
 <div class="photo" data-name="ミニ明太マヨご飯">写真挿入</div>
 <div class="info">
 <h3>ミニ明太マヨご飯</h3>
@@ -1734,8 +866,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="rice-5" data-tags="pork,rice">
+</div><div class="menu-item" data-id="rice-5" data-tags="pork,rice">
 <div class="photo" data-name="チャーシュー飯">写真挿入</div>
 <div class="info">
 <h3>チャーシュー飯</h3>
@@ -1745,8 +876,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="rice-6" data-tags="spicy,rice">
+</div><div class="menu-item" data-id="rice-6" data-tags="spicy,rice">
 <div class="photo" data-name="麻婆丼">写真挿入</div>
 <div class="info">
 <h3>麻婆丼</h3>
@@ -1756,8 +886,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="rice-7" data-tags="rice,fried">
+</div><div class="menu-item" data-id="rice-7" data-tags="rice,fried">
 <div class="photo" data-name="天津飯">写真挿入</div>
 <div class="info">
 <h3>天津飯</h3>
@@ -1767,8 +896,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 </div>
 </details>
 <details class="menu-category" id="section-ippin">
@@ -1928,7 +1056,7 @@
 </div>
 </details>
 <details class="menu-category" id="section-agemono">
-<summary>揚げ物<span class="cat-count">13品</span></summary>
+<summary>揚げ物<span class="cat-count">12品</span></summary>
 <div class="category-body">
 <div class="subcats"><details class="sub-category" id="section-agemono-sub0"><summary>鶏肉系唐揚げ<span class="sub-count">4品</span></summary><div class="menu-grid"><div class="menu-item" data-id="agemono-6" data-tags="chicken,fried">
 <div class="photo" data-name="鶏もも肉の唐揚げ">写真挿入</div>
@@ -1990,7 +1118,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div></div></details><details class="sub-category" id="section-agemono-sub2"><summary>野菜・その他系<span class="sub-count">7品</span></summary><div class="menu-grid"><div class="menu-item" data-id="agemono-1" data-tags="fried">
+</div></div></details><details class="sub-category" id="section-agemono-sub2"><summary>野菜・その他系<span class="sub-count">6品</span></summary><div class="menu-grid"><div class="menu-item" data-id="agemono-1" data-tags="fried">
 <div class="photo" data-name="ニンニク揚げ">写真挿入</div>
 <div class="info">
 <h3>ニンニク揚げ</h3>
@@ -2014,16 +1142,6 @@
 <div class="photo" data-name="フライドポテト">写真挿入</div>
 <div class="info">
 <h3>フライドポテト</h3>
-<p class="price">420円</p>
-<div class="like-area">
-<button class="like-btn">⭐お気に入り登録</button>
-<span class="like-count">0</span>
-</div>
-</div>
-</div><div class="menu-item" data-id="agemono-4" data-tags="vegetable,fried">
-<div class="photo" data-name="揚げ銀杏（期間限定）">写真挿入</div>
-<div class="info">
-<h3>揚げ銀杏（期間限定）</h3>
 <p class="price">420円</p>
 <div class="like-area">
 <button class="like-btn">⭐お気に入り登録</button>
@@ -2066,8 +1184,7 @@
 <details class="menu-category" id="section-yakimono">
 <summary>焼き物<span class="cat-count">6品</span></summary>
 <div class="category-body">
-<div class="menu-grid">
-<div class="menu-item" data-id="yakimono-1" data-tags="vegetable">
+<div class="menu-grid"><div class="menu-item" data-id="yakimono-1" data-tags="vegetable">
 <div class="photo" data-name="焼きナス">写真挿入</div>
 <div class="info">
 <h3>焼きナス</h3>
@@ -2077,8 +1194,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="yakimono-2" data-tags="seafood">
+</div><div class="menu-item" data-id="yakimono-2" data-tags="seafood">
 <div class="photo" data-name="子持ちシシャモ焼き">写真挿入</div>
 <div class="info">
 <h3>子持ちシシャモ焼き</h3>
@@ -2088,8 +1204,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="yakimono-3" data-tags="seafood">
+</div><div class="menu-item" data-id="yakimono-3" data-tags="seafood">
 <div class="photo" data-name="さば塩焼き">写真挿入</div>
 <div class="info">
 <h3>さば塩焼き</h3>
@@ -2099,8 +1214,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="yakimono-4" data-tags="seafood">
+</div><div class="menu-item" data-id="yakimono-4" data-tags="seafood">
 <div class="photo" data-name="縞ホッケ焼き（半身）">写真挿入</div>
 <div class="info">
 <h3>縞ホッケ焼き（半身）</h3>
@@ -2110,8 +1224,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="yakimono-5" data-tags="pork">
+</div><div class="menu-item" data-id="yakimono-5" data-tags="pork">
 <div class="photo" data-name="豚肩ロース塩胡椒焼き">写真挿入</div>
 <div class="info">
 <h3>豚肩ロース塩胡椒焼き</h3>
@@ -2121,8 +1234,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="yakimono-6" data-tags="chicken">
+</div><div class="menu-item" data-id="yakimono-6" data-tags="chicken">
 <div class="photo" data-name="若鶏柚子塩胡椒焼き">写真挿入</div>
 <div class="info">
 <h3>若鶏柚子塩胡椒焼き</h3>
@@ -2132,15 +1244,13 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 </div>
 </details>
 <details class="menu-category" id="section-salad">
 <summary>サラダ<span class="cat-count">4品</span></summary>
 <div class="category-body">
-<div class="menu-grid">
-<div class="menu-item" data-id="salad-1" data-tags="vegetable">
+<div class="menu-grid"><div class="menu-item" data-id="salad-1" data-tags="vegetable">
 <div class="photo" data-name="キャベツサラダ">写真挿入</div>
 <div class="info">
 <h3>キャベツサラダ</h3>
@@ -2150,8 +1260,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="salad-2" data-tags="vegetable">
+</div><div class="menu-item" data-id="salad-2" data-tags="vegetable">
 <div class="photo" data-name="なすみょうがサラダ">写真挿入</div>
 <div class="info">
 <h3>なすみょうがサラダ</h3>
@@ -2161,8 +1270,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="salad-3" data-tags="vegetable">
+</div><div class="menu-item" data-id="salad-3" data-tags="vegetable">
 <div class="photo" data-name="アスパラサラダ">写真挿入</div>
 <div class="info">
 <h3>アスパラサラダ</h3>
@@ -2172,8 +1280,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="salad-4" data-tags="egg,vegetable">
+</div><div class="menu-item" data-id="salad-4" data-tags="egg,vegetable">
 <div class="photo" data-name="温玉入りシーザーサラダ">写真挿入</div>
 <div class="info">
 <h3>温玉入りシーザーサラダ</h3>
@@ -2183,15 +1290,13 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 </div>
 </details>
 <details class="menu-category" id="section-tenshin">
 <summary>点心類<span class="cat-count">8品</span></summary>
 <div class="category-body">
-<div class="menu-grid">
-<div class="menu-item" data-id="tenshin-1" data-tags="dumpling">
+<div class="menu-grid"><div class="menu-item" data-id="tenshin-1" data-tags="dumpling">
 <div class="photo" data-name="焼き小龍包（4個入り）">写真挿入</div>
 <div class="info">
 <h3>焼き小龍包（4個入り）</h3>
@@ -2201,8 +1306,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="tenshin-2" data-tags="dumpling">
+</div><div class="menu-item" data-id="tenshin-2" data-tags="dumpling">
 <div class="photo" data-name="明太チーズ春巻">写真挿入</div>
 <div class="info">
 <h3>明太チーズ春巻</h3>
@@ -2212,8 +1316,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="tenshin-3" data-tags="dumpling">
+</div><div class="menu-item" data-id="tenshin-3" data-tags="dumpling">
 <div class="photo" data-name="焼き餃子（5個入り）">写真挿入</div>
 <div class="info">
 <h3>焼き餃子（5個入り）</h3>
@@ -2223,8 +1326,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="tenshin-4" data-tags="dumpling">
+</div><div class="menu-item" data-id="tenshin-4" data-tags="dumpling">
 <div class="photo" data-name="ネギマヨ餃子（5個入り）">写真挿入</div>
 <div class="info">
 <h3>ネギマヨ餃子（5個入り）</h3>
@@ -2234,8 +1336,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="tenshin-5" data-tags="dumpling">
+</div><div class="menu-item" data-id="tenshin-5" data-tags="dumpling">
 <div class="photo" data-name="水餃子（7個入り）">写真挿入</div>
 <div class="info">
 <h3>水餃子（7個入り）</h3>
@@ -2245,8 +1346,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="tenshin-6" data-tags="dumpling">
+</div><div class="menu-item" data-id="tenshin-6" data-tags="dumpling">
 <div class="photo" data-name="春巻（3本入り）">写真挿入</div>
 <div class="info">
 <h3>春巻（3本入り）</h3>
@@ -2256,8 +1356,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="tenshin-7" data-tags="dumpling">
+</div><div class="menu-item" data-id="tenshin-7" data-tags="dumpling">
 <div class="photo" data-name="小籠包（4個入り）">写真挿入</div>
 <div class="info">
 <h3>小籠包（4個入り）</h3>
@@ -2267,8 +1366,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-<div class="menu-item" data-id="tenshin-8" data-tags="dumpling">
+</div><div class="menu-item" data-id="tenshin-8" data-tags="dumpling">
 <div class="photo" data-name="シュウマイ（4個入り）">写真挿入</div>
 <div class="info">
 <h3>シュウマイ（4個入り）</h3>
@@ -2278,8 +1376,7 @@
 <span class="like-count">0</span>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 </div>
 </details>
 <details class="menu-category" id="section-otsumami">
@@ -2459,19 +1556,19 @@
 </div>
 </details>
 </div>
+</div>
+</details>
+</div>
 </main>
-<!-- 常に表示される「全部閉じる」ボタン -->
 <button aria-label="開いているアコーディオンを全部閉じる" class="collapse-fab" id="collapseAllBtn" type="button">
 <span class="collapse-fab-icon">⤴</span>
 <span>すべて閉じる</span>
 </button>
-<!-- 常に表示される「お気に入り」ボタン -->
 <button aria-label="お気に入り一覧を開く" class="fav-fab" id="favFabBtn" type="button">
 <span class="fav-fab-icon">⭐</span>
 <span>お気に入り</span>
 <span class="fav-fab-badge" id="favFabBadge">0</span>
 </button>
-<!-- 左上ハンバーガーボタン（目次） -->
 <button aria-label="メニューを開く" class="hamburger-btn" id="hamburgerBtn" type="button">☰</button>
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <div class="drawer-panel" id="drawerPanel">
@@ -2483,7 +1580,6 @@
 <div class="drawer-section-title">目次</div>
 <div id="drawerTocList"></div>
 </div>
-<!-- お気に入り専用パネル -->
 <div class="fav-panel-overlay" id="favPanelOverlay"></div>
 <div class="fav-panel" id="favPanel">
 <div class="fav-panel-header">
@@ -2495,7 +1591,6 @@
 <div id="favoritesList"></div>
 </div>
 </div>
-<!-- 画像拡大モーダル -->
 <div class="modal" id="imageModal">
 <div class="modal-content">
 <button class="modal-close">×</button>
@@ -2504,493 +1599,459 @@
 </div>
 </div>
 <script>
-// ===== お気に入り登録機能（localStorageで即時反映 + Base44へ統計送信） =====
-
-const FAVORITE_API_BASE = 'https://rank-vote-hub.base44.app/functions';
-
-// 端末ごとの匿名ID（統計の重複カウント防止に使うだけで、お客さんには表示されません）
-function getDeviceId() {
-  const key = 'haruki_device_id';
-  let id = localStorage.getItem(key);
-  if (!id) {
-    id = (crypto.randomUUID ? crypto.randomUUID() : (Date.now() + '-' + Math.random()));
-    localStorage.setItem(key, id);
-  }
+const FAVORITE_API_BASE='https://rank-vote-hub.base44.app/functions';
+function getDeviceId(){
+  const key='haruki_device_id';
+  let id=localStorage.getItem(key);
+  if(!id){id=(crypto.randomUUID?crypto.randomUUID():(Date.now()+'-'+Math.random()));localStorage.setItem(key,id);}
   return id;
 }
-
-// 店舗側の統計用にBase44へ送信（失敗してもお客さんの操作は妨げない）
-function sendFavoriteEvent(itemId, isLiked) {
-  fetch(FAVORITE_API_BASE + '/setFavorite', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      item_id: itemId,
-      device_id: getDeviceId(),
-      is_favorited: isLiked
-    })
-  }).catch(function(err) {
-    console.warn('お気に入り統計の送信に失敗しました', err);
-  });
+function sendFavoriteEvent(itemId,isLiked){
+  fetch(FAVORITE_API_BASE+'/setFavorite',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({item_id:itemId,device_id:getDeviceId(),is_favorited:isLiked})
+  }).catch(function(err){console.warn('お気に入り統計の送信に失敗しました',err);});
 }
 
-let renderFavoritesList; // 他のIIFEからも呼べるようにスコープを広げておく
+let renderFavoritesList;
 
-window.addEventListener('load', function() {
+window.addEventListener('load',function(){
+  const favFabBadge=document.getElementById('favFabBadge');
 
-  const allMenuItems = document.querySelectorAll('.menu-item');
-  const favFabBadge = document.getElementById('favFabBadge');
+  function loadPhotoImage(photo){
+    if(!photo||photo.dataset.loaded==='true')return;
+    const container=photo.closest('[data-id]');
+    const id=container?container.dataset.id:null;
+    if(!id)return;
+    const img=new Image();
+    img.onload=function(){
+      photo.style.backgroundImage="url('images/"+id+".jpg')";
+      photo.textContent='';
+      photo.dataset.loaded='true';
+    };
+    img.onerror=function(){photo.dataset.loaded='true';};
+    img.src='images/'+id+'.jpg';
+  }
 
-  allMenuItems.forEach(function(menu) {
-    const menuId = menu.dataset.id;
-    const likeButton = menu.querySelector('.like-btn');
+  let lazyImageObserver=null;
+  if('IntersectionObserver' in window){
+    lazyImageObserver=new IntersectionObserver(function(entries,obs){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){loadPhotoImage(entry.target);obs.unobserve(entry.target);}
+      });
+    },{rootMargin:'300px 0px',threshold:0.01});
+  }
 
-    let isLiked = localStorage.getItem('like_' + menuId) === 'true';
-
-    if (isLiked) {
-      likeButton.classList.add('active');
-    } else {
-      likeButton.classList.remove('active');
-    }
-
-    likeButton.addEventListener('click', function() {
-      isLiked = !isLiked;
-      likeButton.classList.toggle('active', isLiked);
-      localStorage.setItem('like_' + menuId, isLiked.toString());
-      sendFavoriteEvent(menuId, isLiked); // ← Base44へ統計を送る
+  document.querySelectorAll('.menu-item').forEach(function(menu){
+    if(menu.dataset.bound)return;
+    menu.dataset.bound='1';
+    const menuId=menu.dataset.id;
+    const likeButton=menu.querySelector('.like-btn');
+    let isLiked=localStorage.getItem('like_'+menuId)==='true';
+    likeButton.classList.toggle('active',isLiked);
+    likeButton.addEventListener('click',function(){
+      isLiked=!isLiked;
+      likeButton.classList.toggle('active',isLiked);
+      localStorage.setItem('like_'+menuId,isLiked.toString());
+      sendFavoriteEvent(menuId,isLiked);
       renderFavoritesList();
     });
+    const photo=menu.querySelector('.photo');
+    if(photo){
+      if(lazyImageObserver)lazyImageObserver.observe(photo);
+      else loadPhotoImage(photo);
+    }
   });
 
-  // ===== お気に入り登録一覧の表示を更新 =====
-  renderFavoritesList = function() {
-    const listEl = document.getElementById('favoritesList');
-    const favorites = [];
-
-    allMenuItems.forEach(function(menu) {
-      const menuId = menu.dataset.id;
-      const isLiked = localStorage.getItem('like_' + menuId) === 'true';
-      if (isLiked) {
-        const name = menu.querySelector('h3').textContent;
-        const price = menu.querySelector('.price').textContent;
-        favorites.push({ id: menuId, name: name, price: price });
+  renderFavoritesList=function(){
+    const listEl=document.getElementById('favoritesList');
+    const favorites=[];
+    document.querySelectorAll('.menu-item').forEach(function(menu){
+      const menuId=menu.dataset.id;
+      if(localStorage.getItem('like_'+menuId)==='true'){
+        favorites.push({id:menuId,name:menu.querySelector('h3').textContent,price:menu.querySelector('.price').textContent});
       }
     });
-
-    if (favFabBadge) {
-      if (favorites.length > 0) {
-        favFabBadge.textContent = favorites.length;
-        favFabBadge.classList.add('active');
-      } else {
-        favFabBadge.classList.remove('active');
-      }
+    if(favFabBadge){
+      if(favorites.length>0){favFabBadge.textContent=favorites.length;favFabBadge.classList.add('active');}
+      else favFabBadge.classList.remove('active');
     }
-
-    if (favorites.length === 0) {
-      listEl.innerHTML = '<p class="favorites-empty">お気に入り登録すると表示されます</p>';
+    if(favorites.length===0){
+      listEl.innerHTML='<p class="favorites-empty">お気に入り登録すると表示されます</p>';
       return;
     }
-
-    listEl.innerHTML = favorites.map(function(item) {
-      return '<div class="favorite-entry" data-jump-id="' + item.id + '">' +
-             '<span class="fav-name">' + item.name + '<span class="fav-jump">▶ タップでジャンプ</span></span>' +
-             '<span class="fav-price">' + item.price + '</span>' +
-             '</div>';
+    listEl.innerHTML=favorites.map(function(item){
+      return '<div class="favorite-entry" data-jump-id="'+item.id+'">'+
+        '<span class="fav-name">'+item.name+'<span class="fav-jump">▶ タップでジャンプ</span></span>'+
+        '<span class="fav-price">'+item.price+'</span></div>';
     }).join('');
-
-    // ジャンプ用クリックイベントを付与
-    listEl.querySelectorAll('.favorite-entry').forEach(function(entry) {
-      entry.addEventListener('click', function() {
-        jumpToMenuItem(entry.dataset.jumpId);
-      });
+    listEl.querySelectorAll('.favorite-entry').forEach(function(entry){
+      entry.addEventListener('click',function(){jumpToMenuItem(entry.dataset.jumpId);});
     });
   };
-
   renderFavoritesList();
-
-  // ===== 画像の遅延読み込み（IntersectionObserver） =====
-  // 画面に近づいた写真だけ images/<id>.jpg を読み込む。読み込み済みは再取得しない。
-  function loadPhotoImage(photo, forcedId) {
-    if (!photo || photo.dataset.loaded === 'true') return;
-    const container = photo.closest('[data-id]');
-    const id = forcedId || (container ? container.dataset.id : null);
-    if (!id) return;
-    const img = new Image();
-    img.onload = function() {
-      photo.style.backgroundImage = "url('images/" + id + ".jpg')";
-      photo.textContent = '';
-      photo.dataset.loaded = 'true';
-    };
-    img.onerror = function() {
-      photo.dataset.loaded = 'true'; // 見つからない場合は再試行しない
-    };
-    img.src = 'images/' + id + '.jpg';
-  }
-
-  let lazyImageObserver = null;
-  if ('IntersectionObserver' in window) {
-    lazyImageObserver = new IntersectionObserver(function(entries, obs) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          loadPhotoImage(entry.target);
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: '300px 0px', threshold: 0.01 });
-  }
-
-  allMenuItems.forEach(function(item) {
-    const photo = item.querySelector('.photo');
-    if (!photo) return;
-    if (lazyImageObserver) {
-      lazyImageObserver.observe(photo);
-    } else {
-      loadPhotoImage(photo); // 古いブラウザ向けフォールバック：即時読み込み
-    }
-  });
-
 });
 
-// ===== お気に入り一覧からのジャンプ機能 =====
-function jumpToMenuItem(menuId) {
-  const target = document.querySelector('.menu-item[data-id="' + menuId + '"]');
-  if (!target) return;
-
-  // 検索結果表示中なら解除する
-  const searchInput = document.getElementById('menuSearchInput');
-  if (searchInput && searchInput.value.trim() !== '') {
-    searchInput.value = '';
+function jumpToMenuItem(menuId){
+  const target=document.querySelector('.menu-item[data-id="'+menuId+'"]');
+  if(!target)return;
+  const searchInput=document.getElementById('menuSearchInput');
+  if(searchInput&&searchInput.value.trim()!==''){
+    searchInput.value='';
     searchInput.dispatchEvent(new Event('input'));
   }
-
-  // 祖先のdetails（カテゴリ・サブカテゴリ）をすべて開く
-  let el = target.parentElement;
-  while (el) {
-    if (el.tagName === 'DETAILS') {
-      el.setAttribute('open', '');
-    }
-    el = el.parentElement;
+  let el=target.parentElement;
+  while(el){
+    if(el.tagName==='DETAILS')el.setAttribute('open','');
+    el=el.parentElement;
   }
-
-  // パネル・ドロワーを閉じる
   closeFavPanel();
   closeDrawer();
-
-  setTimeout(function() {
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(function(){
+    target.scrollIntoView({behavior:'smooth',block:'center'});
     target.classList.remove('jump-highlight');
-    // 強制リフローしてアニメーションを再トリガー
     void target.offsetWidth;
     target.classList.add('jump-highlight');
-  }, 220);
+  },220);
 }
 
-// ===== 画像クリックで拡大表示 =====
-const modal = document.getElementById('imageModal');
-const modalBody = document.getElementById('modalBody');
-const modalTitle = document.getElementById('modalTitle');
-const closeBtn = document.querySelector('.modal-close');
-
-document.addEventListener('click', function(e) {
-  const photo = e.target.closest('.photo');
-  if (photo) {
-    const container = photo.closest('.menu-item');
-    if (!container) return;
-    const menuId = container.dataset.id;
-    const menuName = photo.dataset.name;
-    modalBody.innerHTML = '<img src="images/' + menuId + '.jpg" alt="' + menuName + '" class="modal-img" onerror="this.parentElement.textContent=\'画像準備中：' + menuName + '\'">';
-    modalTitle.textContent = menuName;
+const modal=document.getElementById('imageModal');
+const modalBody=document.getElementById('modalBody');
+const modalTitle=document.getElementById('modalTitle');
+const closeBtn=document.querySelector('.modal-close');
+document.addEventListener('click',function(e){
+  const photo=e.target.closest('.photo');
+  if(photo){
+    const container=photo.closest('.menu-item');
+    if(!container)return;
+    const menuId=container.dataset.id;
+    const menuName=photo.dataset.name;
+    modalBody.innerHTML='<img src="images/'+menuId+'.jpg" alt="'+menuName+'" class="modal-img" onerror="this.parentElement.textContent=\'画像準備中：'+menuName+'\'">';
+    modalTitle.textContent=menuName;
     modal.classList.add('active');
   }
 });
+closeBtn.addEventListener('click',function(){modal.classList.remove('active');});
+modal.addEventListener('click',function(e){if(e.target===modal)modal.classList.remove('active');});
 
-closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-modal.addEventListener('click', e => {
-  if (e.target === modal) modal.classList.remove('active');
-});
-
-// ===== 「全部閉じる」ボタン：開いているアコーディオンを全て閉じる =====
-const collapseAllBtn = document.getElementById('collapseAllBtn');
-if (collapseAllBtn) {
-  collapseAllBtn.addEventListener('click', function() {
-    document.querySelectorAll('details.menu-category, details.sub-category, details.info-category').forEach(function(d) {
-      d.removeAttribute('open');
-    });
+const collapseAllBtn=document.getElementById('collapseAllBtn');
+if(collapseAllBtn){
+  collapseAllBtn.addEventListener('click',function(){
+    document.querySelectorAll('details.menu-category, details.sub-category, details.info-category').forEach(function(d){d.removeAttribute('open');});
   });
 }
 
-// ===== お気に入り専用パネルの開閉 =====
-const favPanel = document.getElementById('favPanel');
-const favPanelOverlay = document.getElementById('favPanelOverlay');
-const favFabBtn = document.getElementById('favFabBtn');
-const favPanelCloseBtn = document.getElementById('favPanelCloseBtn');
+const favPanel=document.getElementById('favPanel');
+const favPanelOverlay=document.getElementById('favPanelOverlay');
+const favFabBtn=document.getElementById('favFabBtn');
+const favPanelCloseBtn=document.getElementById('favPanelCloseBtn');
+function openFavPanel(){favPanel.classList.add('active');favPanelOverlay.classList.add('active');}
+function closeFavPanel(){favPanel.classList.remove('active');favPanelOverlay.classList.remove('active');}
+if(favFabBtn)favFabBtn.addEventListener('click',openFavPanel);
+if(favPanelOverlay)favPanelOverlay.addEventListener('click',closeFavPanel);
+if(favPanelCloseBtn)favPanelCloseBtn.addEventListener('click',closeFavPanel);
 
-function openFavPanel() {
-  favPanel.classList.add('active');
-  favPanelOverlay.classList.add('active');
-}
-function closeFavPanel() {
-  favPanel.classList.remove('active');
-  favPanelOverlay.classList.remove('active');
-}
-if (favFabBtn) favFabBtn.addEventListener('click', openFavPanel);
-if (favPanelOverlay) favPanelOverlay.addEventListener('click', closeFavPanel);
-if (favPanelCloseBtn) favPanelCloseBtn.addEventListener('click', closeFavPanel);
+let closeDrawer=function(){};
+(function(){
+  const hamburgerBtn=document.getElementById('hamburgerBtn');
+  const drawerPanel=document.getElementById('drawerPanel');
+  const drawerOverlay=document.getElementById('drawerOverlay');
+  const drawerCloseBtn=document.getElementById('drawerCloseBtn');
+  const drawerTocList=document.getElementById('drawerTocList');
+  const drawerTopLink=document.getElementById('drawerTopLink');
 
-// ===== 左上ハンバーガー：目次ドロワーの開閉とジャンプ =====
-let closeDrawer = function() {}; // フォールバック（後で上書き）
-(function() {
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const drawerPanel = document.getElementById('drawerPanel');
-  const drawerOverlay = document.getElementById('drawerOverlay');
-  const drawerCloseBtn = document.getElementById('drawerCloseBtn');
-  const drawerTocList = document.getElementById('drawerTocList');
-  const drawerTopLink = document.getElementById('drawerTopLink');
-
-  // カテゴリ一覧をmenu-categoryのsummaryから自動生成
-  document.querySelectorAll('details.menu-category').forEach(function(cat) {
-    const summary = cat.querySelector('summary');
-    if (!summary) return;
-    const cloneText = Array.from(summary.childNodes)
-      .filter(function(n) { return n.nodeType === Node.TEXT_NODE; })
-      .map(function(n) { return n.textContent; })
-      .join('').trim();
-    if (!cloneText) return;
-    const link = document.createElement('a');
-    link.className = 'drawer-cat-link';
-    link.href = '#' + cat.id;
-    link.textContent = cloneText;
-    link.addEventListener('click', function(e) {
+  document.querySelectorAll('details.menu-category').forEach(function(cat){
+    const summary=cat.querySelector('summary');
+    if(!summary)return;
+    const label=Array.from(summary.childNodes).filter(function(n){return n.nodeType===Node.TEXT_NODE;}).map(function(n){return n.textContent;}).join('').trim();
+    if(!label)return;
+    const link=document.createElement('a');
+    link.className='drawer-cat-link'+(cat.parentElement.closest('details.menu-category')?' child':'');
+    link.href='#'+cat.id;
+    link.textContent=label;
+    link.addEventListener('click',function(e){
       e.preventDefault();
-      cat.setAttribute('open', '');
+      let p=cat;
+      while(p){
+        if(p.tagName==='DETAILS')p.setAttribute('open','');
+        p=p.parentElement;
+      }
       closeDrawer();
-      setTimeout(function() {
-        cat.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 50);
+      setTimeout(function(){cat.scrollIntoView({behavior:'smooth',block:'start'});},50);
     });
     drawerTocList.appendChild(link);
   });
 
-  function openDrawer() {
-    drawerPanel.classList.add('active');
-    drawerOverlay.classList.add('active');
-  }
-  closeDrawer = function() {
-    drawerPanel.classList.remove('active');
-    drawerOverlay.classList.remove('active');
-  };
-
-  hamburgerBtn.addEventListener('click', openDrawer);
-  drawerOverlay.addEventListener('click', closeDrawer);
-  drawerCloseBtn.addEventListener('click', closeDrawer);
-  drawerTopLink.addEventListener('click', function() {
-    setTimeout(closeDrawer, 50);
-  });
+  function openDrawer(){drawerPanel.classList.add('active');drawerOverlay.classList.add('active');}
+  closeDrawer=function(){drawerPanel.classList.remove('active');drawerOverlay.classList.remove('active');};
+  hamburgerBtn.addEventListener('click',openDrawer);
+  drawerOverlay.addEventListener('click',closeDrawer);
+  drawerCloseBtn.addEventListener('click',closeDrawer);
+  drawerTopLink.addEventListener('click',function(){setTimeout(closeDrawer,50);});
 })();
 
-// ===== メニュー検索 =====
-(function() {
-  const input = document.getElementById('menuSearchInput');
-  const clearBtn = document.getElementById('menuSearchClearBtn');
-  const noResult = document.getElementById('searchNoResult');
-  const hitCount = document.getElementById('searchHitCount');
-  const resultsGrid = document.getElementById('searchResultsGrid');
-  const menuList = document.querySelector('.menu-list');
-  const allItems = Array.from(document.querySelectorAll('.menu-list .menu-item'));
+(function(){
+  const input=document.getElementById('menuSearchInput');
+  const clearBtn=document.getElementById('menuSearchClearBtn');
+  const noResult=document.getElementById('searchNoResult');
+  const hitCount=document.getElementById('searchHitCount');
+  const resultsGrid=document.getElementById('searchResultsGrid');
+  const menuList=document.querySelector('.menu-list');
 
-  function normalize(str) {
-    return str
-      .toLowerCase()
-      .replace(/[\u30a1-\u30f6]/g, function(ch) {
-        return String.fromCharCode(ch.charCodeAt(0) - 0x60);
-      })
-      .replace(/\s+/g, '');
+  function normalize(str){
+    return str.toLowerCase()
+      .replace(/[\u30a1-\u30f6]/g,function(ch){return String.fromCharCode(ch.charCodeAt(0)-0x60);})
+      .replace(/\s+/g,'');
   }
 
-  // 漢字表記 → 読み（ひらがな）の対応表。該当する語が商品名に含まれていたら
-  // 読みも検索対象テキストに追加し、「味噌」でも「みそ」でも一致するようにする
-  const READINGS = [
-    ['味噌', 'みそ'], ['豚肉', 'ぶたにく'], ['豚', 'ぶた'], ['鶏肉', 'とりにく'],
-    ['鶏', 'とり'], ['野菜', 'やさい'], ['辛子', 'からし'], ['辛', 'から'],
-    ['生姜焼き', 'しょうがやき'], ['生姜', 'しょうが'], ['餃子', 'ぎょうざ'],
-    ['春巻', 'はるまき'], ['唐揚', 'からあげ'], ['玉子', 'たまご'], ['卵', 'たまご'],
-    ['豆腐', 'とうふ'], ['厚揚げ', 'あつあげ'], ['天津飯', 'てんしんはん'],
-    ['酢豚', 'すぶた'], ['麻婆', 'まーぼー'], ['塩', 'しお'], ['醤油', 'しょうゆ'],
-    ['冷奴', 'ひややっこ'], ['枝豆', 'えだまめ'], ['冷やし', 'ひやし'],
-    ['焼き', 'やき'], ['揚げ', 'あげ'], ['炒め', 'いため'], ['煮込み', 'にこみ'],
-    ['麺', 'めん'], ['飯', 'めし'], ['肉', 'にく'], ['魚', 'さかな'],
-    ['小籠包', 'しょうろんぽう'], ['小龍包', 'しょうろんぽう'], ['水餃子', 'すいぎょうざ'],
-    ['特製', 'とくせい'], ['並盛', 'なみもり'], ['大盛', 'おおもり']
-  ].map(function(pair) { return [pair[0], normalize(pair[1])]; });
+  const READINGS=[
+    ['味噌','みそ'],['豚肉','ぶたにく'],['豚','ぶた'],['鶏肉','とりにく'],
+    ['鶏','とり'],['野菜','やさい'],['辛子','からし'],['辛','から'],
+    ['生姜焼き','しょうがやき'],['生姜','しょうが'],['餃子','ぎょうざ'],
+    ['春巻','はるまき'],['唐揚','からあげ'],['玉子','たまご'],['卵','たまご'],
+    ['豆腐','とうふ'],['厚揚げ','あつあげ'],['天津飯','てんしんはん'],
+    ['酢豚','すぶた'],['麻婆','まーぼー'],['塩','しお'],['醤油','しょうゆ'],
+    ['冷奴','ひややっこ'],['枝豆','えだまめ'],['冷やし','ひやし'],
+    ['焼き','やき'],['揚げ','あげ'],['炒め','いため'],['煮込み','にこみ'],
+    ['麺','めん'],['飯','めし'],['肉','にく'],['魚','さかな'],
+    ['小籠包','しょうろんぽう'],['小龍包','しょうろんぽう'],['水餃子','すいぎょうざ'],
+    ['特製','とくせい'],['並盛','なみもり'],['大盛','おおもり'],['銀杏','ぎんなん']
+  ].map(function(pair){return [pair[0],normalize(pair[1])];});
 
-  function buildSearchText(name) {
-    const norm = normalize(name);
-    let extra = '';
-    READINGS.forEach(function(pair) {
-      if (name.indexOf(pair[0]) !== -1) {
-        extra += pair[1];
-      }
-    });
-    return norm + extra;
+  function buildSearchText(name){
+    let extra='';
+    READINGS.forEach(function(pair){if(name.indexOf(pair[0])!==-1)extra+=pair[1];});
+    return normalize(name)+extra;
   }
 
-  // 元の位置（親要素）を記憶しておき、解除時に完全に元通り戻せるようにする
-  const itemData = allItems.map(function(item) {
-    const h3 = item.querySelector('h3');
-    const nameText = h3 ? h3.textContent : '';
-    return {
-      el: item,
-      normName: buildSearchText(nameText),
-      originalParent: item.parentNode
-    };
-  });
-
-  let isSearching = false;
-
-  function resetView() {
-    if (isSearching) {
-      itemData.forEach(function(d) {
-        d.originalParent.appendChild(d.el);
-      });
-    }
-    isSearching = false;
-    menuList.style.display = '';
-    resultsGrid.style.display = 'none';
-    resultsGrid.innerHTML = '';
-    document.querySelectorAll('details.menu-category, details.sub-category').forEach(function(d) {
-      d.removeAttribute('open');
+  let itemData=[];
+  function collectItems(){
+    itemData=Array.from(document.querySelectorAll('.menu-list .menu-item')).map(function(item){
+      const h3=item.querySelector('h3');
+      return {el:item,normName:buildSearchText(h3?h3.textContent:''),originalParent:item.parentNode};
     });
+  }
+  collectItems();
+
+  let isSearching=false;
+
+  function resetView(){
+    if(isSearching){itemData.forEach(function(d){d.originalParent.appendChild(d.el);});}
+    isSearching=false;
+    menuList.style.display='';
+    resultsGrid.style.display='none';
+    resultsGrid.innerHTML='';
+    document.querySelectorAll('details.menu-category, details.sub-category').forEach(function(d){d.removeAttribute('open');});
     noResult.classList.remove('active');
     hitCount.classList.remove('active');
   }
 
-  function runSearch() {
-    const raw = input.value.trim();
-    if (!raw) {
-      resetView();
-      return;
-    }
-    isSearching = true;
-    const q = normalize(raw);
-    let hits = 0;
-
-    menuList.style.display = 'none';
-    resultsGrid.innerHTML = '';
-
-    itemData.forEach(function(d) {
-      if (d.normName.indexOf(q) !== -1) {
-        resultsGrid.appendChild(d.el);
-        hits++;
-      } else if (d.el.parentNode === resultsGrid) {
-        d.originalParent.appendChild(d.el);
-      }
+  function runSearch(){
+    const raw=input.value.trim();
+    if(!raw){resetView();return;}
+    if(!isSearching)collectItems();
+    isSearching=true;
+    const q=normalize(raw);
+    let hits=0;
+    menuList.style.display='none';
+    resultsGrid.innerHTML='';
+    itemData.forEach(function(d){
+      if(d.normName.indexOf(q)!==-1){resultsGrid.appendChild(d.el);hits++;}
+      else if(d.el.parentNode===resultsGrid){d.originalParent.appendChild(d.el);}
     });
-
-    resultsGrid.style.display = hits > 0 ? 'grid' : 'none';
-    noResult.classList.toggle('active', hits === 0);
-    hitCount.classList.toggle('active', hits > 0);
-    hitCount.textContent = hits + '件見つかりました';
+    resultsGrid.style.display=hits>0?'grid':'none';
+    noResult.classList.toggle('active',hits===0);
+    hitCount.classList.toggle('active',hits>0);
+    hitCount.textContent=hits+'件見つかりました';
   }
 
-  input.addEventListener('input', runSearch);
-  clearBtn.addEventListener('click', function() {
-    input.value = '';
-    resetView();
-    input.focus();
-  });
+  input.addEventListener('input',runSearch);
+  clearBtn.addEventListener('click',function(){input.value='';resetView();input.focus();});
 })();
 </script>
 <script>
-// ===== お知らせ（Googleスプレッドシート連携｜表示先振り分け対応） =====
-const ANNOUNCEMENT_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTGjrgxeSZNGFPi0_KXFHoiyXrp2Od8kc5wdX8RMQGmeo80sheBGbbpGTSHAJ2qwpPhy8ms53lKd-HC/pub?gid=0&single=true&output=csv';
+const ANNOUNCEMENT_SHEET_CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vTGjrgxeSZNGFPi0_KXFHoiyXrp2Od8kc5wdX8RMQGmeo80sheBGbbpGTSHAJ2qwpPhy8ms53lKd-HC/pub?gid=0&single=true&output=csv';
 
-// CSV行を正しく分解（カンマ・ダブルクォート対応）
-function parseCsvLine(line) {
-  const fields = [];
-  let current = '';
-  let inQuote = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (c === '"') {
-      if (inQuote && line[i+1] === '"') {
-        current += '"'; i++;
-      } else {
-        inQuote = !inQuote;
-      }
-    } else if (c === ',' && !inQuote) {
-      fields.push(current.trim().replace(/^"|"$/g, ''));
-      current = '';
-    } else {
-      current += c;
+function parseCsvLine(line){
+  const fields=[];
+  let current='';
+  let inQuote=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){
+      if(inQuote&&line[i+1]==='"'){current+='"';i++;}
+      else inQuote=!inQuote;
+    }else if(c===','&&!inQuote){
+      fields.push(current.trim().replace(/^"|"$/g,''));
+      current='';
+    }else{
+      current+=c;
     }
   }
-  fields.push(current.trim().replace(/^"|"$/g, ''));
+  fields.push(current.trim().replace(/^"|"$/g,''));
   return fields;
 }
 
-async function fetchAnnouncementsFromSheet() {
-  if (!ANNOUNCEMENT_SHEET_CSV_URL) return [];
-  try {
-    const res = await fetch(ANNOUNCEMENT_SHEET_CSV_URL + '&_ts=' + Date.now());
-    if (!res.ok) throw new Error('fetch failed');
-    const text = await res.text();
-    const lines = text.split(/\r?\n/).filter(line => line.trim());
-    if (lines.length <= 1) return []; // 見出しだけの場合空に
-
-    // 1行目：見出し、2行目以降をデータとして取得
-    const rows = lines.slice(1).map(parseCsvLine).filter(row => row[0]);
-
-    // ★ 表示先が「メニュー」「両方」または空欄のものだけ抽出
-    const filtered = rows.filter(row => {
-      const dest = (row[3] || '').trim();
-      return dest === '' || dest === 'メニュー' || dest === '両方';
+async function fetchAnnouncementsFromSheet(){
+  if(!ANNOUNCEMENT_SHEET_CSV_URL)return [];
+  try{
+    const res=await fetch(ANNOUNCEMENT_SHEET_CSV_URL+'&_ts='+Date.now());
+    if(!res.ok)throw new Error('fetch failed');
+    const text=await res.text();
+    const lines=text.split(/\r?\n/).filter(function(line){return line.trim();});
+    if(lines.length<=1)return [];
+    const rows=lines.slice(1).map(parseCsvLine).filter(function(row){return row[0];});
+    const filtered=rows.filter(function(row){
+      const dest=(row[3]||'').trim();
+      return dest===''||dest==='メニュー'||dest==='両方';
     });
-
-    // 新しい順に並べ替え（日付で降順）
-    filtered.sort((a, b) => (b[0] || '').localeCompare(a[0] || ''));
-
-    return filtered.map(row => {
-      const date = row[0] || '';
-      const title = row[1] || '';
-      const desc = row[2] || '';
-      return (date ? `📅 ${date} ` : '') + (title ? `【${title}】` : '') + (desc ? ` ${desc}` : '');
+    filtered.sort(function(a,b){return (b[0]||'').localeCompare(a[0]||'');});
+    return filtered.map(function(row){
+      const date=row[0]||'',title=row[1]||'',desc=row[2]||'';
+      return (date?'📅 '+date+' ':'')+(title?'【'+title+'】':'')+(desc?' '+desc:'');
     });
-
-  } catch (e) {
-    console.warn('お知らせ取得エラー:', e);
+  }catch(e){
+    console.warn('お知らせ取得エラー:',e);
     return [];
   }
 }
 
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
+function escapeHtml(str){
+  const div=document.createElement('div');
+  div.textContent=str;
   return div.innerHTML;
 }
 
-function renderAnnouncements(messages) {
-  const section = document.getElementById('announcementSection');
-  const items = document.getElementById('announcementItems');
-  if (!section || !items) return;
-
-  if (!messages || messages.length === 0) {
+function renderAnnouncements(messages){
+  const section=document.getElementById('announcementSection');
+  const items=document.getElementById('announcementItems');
+  if(!section||!items)return;
+  if(!messages||messages.length===0){
     section.classList.remove('active');
-    items.innerHTML = '';
+    items.innerHTML='';
     return;
   }
-
-  items.innerHTML = messages.map(msg =>
-    `<p class="announcement-item">${escapeHtml(msg)}</p>`
-  ).join('');
+  items.innerHTML=messages.map(function(msg){return '<p class="announcement-item">'+escapeHtml(msg)+'</p>';}).join('');
   section.classList.add('active');
 }
 
-async function initAnnouncements() {
-  const messages = await fetchAnnouncementsFromSheet();
-  renderAnnouncements(messages);
-}
+(async function(){renderAnnouncements(await fetchAnnouncementsFromSheet());})();
+</script>
+<script>
+// ===== 期間限定メニュー（Googleスプレッドシート連携）=====
+// 列: A=表示(○) / B=季節(春夏秋冬) / C=商品名 / D=価格 / E=説明 / F=画像
+const SEASONAL_CSV_URL='ここに「ウェブに公開」したCSVのURLを貼る';
 
-initAnnouncements();
+(async function(){
+  if(!SEASONAL_CSV_URL||SEASONAL_CSV_URL.indexOf('http')!==0)return;
+
+  const section=document.getElementById('section-seasonal');
+  const tocLink=document.querySelector('.drawer-cat-link[href="#section-seasonal"]');
+  if(tocLink)tocLink.style.display='none';
+
+  const SEASONS=['春','夏','秋','冬','その他'];
+  const groups={};
+  SEASONS.forEach(function(s){groups[s]=section.querySelector('details[data-season="'+s+'"]');});
+
+  let rows=[];
+  try{
+    const res=await fetch(SEASONAL_CSV_URL+(SEASONAL_CSV_URL.indexOf('?')>=0?'&':'?')+'_ts='+Date.now());
+    if(!res.ok)throw new Error('fetch failed');
+    const text=await res.text();
+    const lines=text.split(/\r?\n/).filter(function(l){return l.trim();});
+    rows=lines.slice(1).map(parseCsvLine).filter(function(r){
+      return /^[○◯〇]$/.test((r[0]||'').trim())&&(r[2]||'').trim()!=='';
+    });
+  }catch(e){
+    console.warn('期間限定メニューの取得エラー:',e);
+    return;
+  }
+  if(rows.length===0)return;
+
+  const used={};
+  rows.forEach(function(r,i){
+    const seasonRaw=(r[1]||'').trim();
+    const season=SEASONS.indexOf(seasonRaw)>=0?seasonRaw:'その他';
+    const name=r[2].trim();
+    const priceRaw=(r[3]||'').trim();
+    const price=/^[\d,]+$/.test(priceRaw)?priceRaw.replace(/,/g,'')+'円':priceRaw;
+    const desc=(r[4]||'').trim();
+    let id=(r[5]||'').trim().replace(/[^A-Za-z0-9_-]/g,'');
+    if(!id||used[id])id='seasonal-row'+(i+2);
+    used[id]=true;
+
+    const item=document.createElement('div');
+    item.className='menu-item';
+    item.dataset.id=id;
+    item.dataset.tags='seasonal';
+    item.dataset.bound='1';
+
+    const photo=document.createElement('div');
+    photo.className='photo';
+    photo.dataset.name=name;
+    photo.textContent='写真準備中';
+
+    const info=document.createElement('div');
+    info.className='info';
+    const h3=document.createElement('h3');
+    h3.textContent=name;
+    info.appendChild(h3);
+    if(desc){
+      const note=document.createElement('p');
+      note.className='tokusei-note';
+      note.textContent=desc;
+      info.appendChild(note);
+    }
+    const p=document.createElement('p');
+    p.className='price';
+    p.textContent=price;
+    info.appendChild(p);
+
+    const likeArea=document.createElement('div');
+    likeArea.className='like-area';
+    const btn=document.createElement('button');
+    btn.className='like-btn';
+    btn.textContent='⭐お気に入り登録';
+    const cnt=document.createElement('span');
+    cnt.className='like-count';
+    cnt.textContent='0';
+    likeArea.appendChild(btn);
+    likeArea.appendChild(cnt);
+    info.appendChild(likeArea);
+
+    item.appendChild(photo);
+    item.appendChild(info);
+    groups[season].querySelector('.menu-grid').appendChild(item);
+
+    let liked=localStorage.getItem('like_'+id)==='true';
+    btn.classList.toggle('active',liked);
+    btn.addEventListener('click',function(){
+      liked=!liked;
+      btn.classList.toggle('active',liked);
+      localStorage.setItem('like_'+id,String(liked));
+      sendFavoriteEvent(id,liked);
+      if(typeof renderFavoritesList==='function')renderFavoritesList();
+    });
+
+    const img=new Image();
+    img.onload=function(){
+      photo.style.backgroundImage="url('images/"+id+".jpg')";
+      photo.textContent='';
+    };
+    img.src='images/'+id+'.jpg';
+  });
+
+  SEASONS.forEach(function(s){
+    const n=groups[s].querySelectorAll('.menu-item').length;
+    groups[s].querySelector('.sub-count').textContent=n+'品';
+    groups[s].style.display=n>0?'':'none';
+  });
+  section.querySelector('.cat-count').textContent=rows.length+'品';
+  section.style.display='';
+  if(tocLink)tocLink.style.display='';
+  if(typeof renderFavoritesList==='function')renderFavoritesList();
+})();
 </script>
 </body>
 </html>
